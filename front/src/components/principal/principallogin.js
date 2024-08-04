@@ -1,23 +1,32 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import validator from 'validator';
 import { regexPassword } from '../../utils';
-import '../Login.css';
-import {baseurl} from '../../url';
 
-function PrincipalLogin() {
+import '../Login.css';
+
+function AdminLogin() {
   const navigate = useNavigate();
+  const isMounted = useRef(true);
+
   const [values, setValues] = useState({
     email: '',
     password: '',
     showPassword: false,
   });
+
   const [errors, setErrors] = useState({
     email: false,
     password: false,
     fetchError: false,
     fetchErrorMsg: '',
   });
+
+  useEffect(() => {
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
 
   const handleChange = (fieldName) => (event) => {
     const currValue = event.target.value;
@@ -26,16 +35,25 @@ function PrincipalLogin() {
         ? validator.isEmail(currValue)
         : regexPassword.test(currValue);
 
-    setErrors((prevErrors) => ({ ...prevErrors, [fieldName]: !isCorrectValue }));
-    setValues((prevValues) => ({ ...prevValues, [fieldName]: currValue }));
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [fieldName]: !isCorrectValue,
+    }));
+
+    setValues((prevValues) => ({
+      ...prevValues,
+      [fieldName]: currValue,
+    }));
   };
 
   const handleShowPassword = () => {
-    setValues((prevValues) => ({ ...prevValues, showPassword: !prevValues.showPassword }));
+    setValues((prevValues) => ({
+      ...prevValues,
+      showPassword: !prevValues.showPassword,
+    }));
   };
 
-  const handleForgotPassword = (event) => {
-    event.preventDefault();
+  const handleForgotPassword = () => {
     navigate('/pforgot');
   };
 
@@ -43,52 +61,60 @@ function PrincipalLogin() {
     event.preventDefault();
 
     try {
-      const res = await fetch(`${baseurl}/api/principallogin`, {
+      const res = await fetch(`/api/principallogin`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          email: values.email,
-          password: values.password,
-          post:'Principal'
+       
+          body: JSON.stringify({
+            email: values.email,
+            password: values.password,
+            post:'Principal'
         }),
       });
 
       if (!res.ok) {
         const error = await res.json();
-        setErrors((prevErrors) => ({
+        if (!isMounted.current) return;
+        return setErrors((prevErrors) => ({
           ...prevErrors,
           fetchError: true,
           fetchErrorMsg: error.msg,
         }));
-        return;
       }
 
       const data = await res.json();
 
       if (data) {
-        localStorage.setItem('email', data.email);
+        // Redirect the officer to the office page
+       
         localStorage.setItem('role', data.role);
-        localStorage.setItem('name', data.name); // Save the principal's name
-        console.log('User Email:', localStorage.getItem('email'));
-        console.log('User Name:', localStorage.getItem('name'));
+        localStorage.setItem('branch', data.department);
+        localStorage.setItem('email', data.email);
+      
+        if (!isMounted.current) return;
         navigate('/phome');
       } else {
-        alert('Login failed');
+        if (!isMounted.current) return;
+        alert('Login failed.');
         window.location.href = '/principallogin';
       }
 
-      setValues({
-        email: '',
-        password: '',
-        showPassword: false,
-      });
+      if (isMounted.current) {
+        setValues({
+          email: '',
+          password: '',
+          showPassword: false,
+        });
+      }
     } catch (error) {
+      if (!isMounted.current) return;
       setErrors((prevErrors) => ({
         ...prevErrors,
         fetchError: true,
-        fetchErrorMsg: 'There was a problem with our server, please try again later',
+        fetchErrorMsg:
+          'There was a problem with our server, please try again later',
       }));
     }
   };
@@ -117,12 +143,13 @@ function PrincipalLogin() {
               onChange={handleChange('email')}
               className={errors.email ? 'login-error' : ''}
             />
-            {errors.email && <p className="login-error-text">Please insert a valid email address</p>}
+            {errors.email && (
+              <p className="login-error-text">Please insert a valid email address</p>
+            )}
 
             <div className="login-password-field">
               <div className="password-input-container">
                 <input
-                  id="login-password-field"
                   type={values.showPassword ? 'text' : 'password'}
                   placeholder="Password"
                   value={values.password}
@@ -145,7 +172,9 @@ function PrincipalLogin() {
               </button>
             </div>
             <div className="signup-link">
-              <p>Not yet registered? <Link to="/principalsignup">Sign up</Link></p>
+              <p>
+                Not yet registered? <Link to="/principalsignup">Sign up</Link>
+              </p>
             </div>
             {errors.fetchError && <p className="login-error-text">{errors.fetchErrorMsg}</p>}
           </form>
@@ -155,4 +184,4 @@ function PrincipalLogin() {
   );
 }
 
-export default PrincipalLogin;
+export default AdminLogin;

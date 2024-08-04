@@ -1,277 +1,187 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import Navbar from "./FacultyNavbar";
+import React, { useState, useRef, useEffect } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import validator from 'validator';
+import { regexPassword } from '../../utils';
 import { baseurl } from '../../url';
-import styles from './InternalMarksForm.module.css'; // Import the CSS module
+import '../Login.css';
 
-const InternalMarksForm = () => {
-  const [semester, setSemester] = useState('');
-  const [course, setCourse] = useState('');
-  const [subject, setSubject] = useState('');
-  const [students, setStudents] = useState([]);
-  const [courses, setCourses] = useState([]);
-  const [semesters, setSemesters] = useState([]);
-  const [subjects, setSubjects] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+function AdminLogin() {
+  const navigate = useNavigate();
+  const isMounted = useRef(true);
+
+  const [values, setValues] = useState({
+    email: '',
+    password: '',
+    showPassword: false,
+  });
+
+  const [errors, setErrors] = useState({
+    email: false,
+    password: false,
+    fetchError: false,
+    fetchErrorMsg: '',
+  });
 
   useEffect(() => {
-    const fetchCoursesAndSemesters = async () => {
-      const email = localStorage.getItem('email');
-      setLoading(true);
-      setError('');
-      try {
-        const response = await axios.post(`${baseurl}/api/data`, { email });
-        const { subjects, semesters, branches } = response.data;
-        setCourses(branches || []);
-        setSemesters(semesters || []);
-        setSubjects(subjects || []);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-        setError('Failed to fetch courses and semesters.');
-      } finally {
-        setLoading(false);
-      }
+    return () => {
+      isMounted.current = false;
     };
-
-    fetchCoursesAndSemesters();
   }, []);
 
-  const fetchStudents = async () => {
-    if (!course || !semester || !subject) {
-      console.error('Please select a course, semester, and subject');
-      return;
-    }
+  const handleChange = (fieldName) => (event) => {
+    const currValue = event.target.value;
+    const isCorrectValue =
+      fieldName === 'email'
+        ? validator.isEmail(currValue)
+        : regexPassword.test(currValue);
 
-    setLoading(true);
-    setError('');
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [fieldName]: !isCorrectValue,
+    }));
+
+    setValues((prevValues) => ({
+      ...prevValues,
+      [fieldName]: currValue,
+    }));
+  };
+
+  const handleShowPassword = () => {
+    setValues((prevValues) => ({
+      ...prevValues,
+      showPassword: !prevValues.showPassword,
+    }));
+  };
+
+  const handleForgotPassword = () => {
+    navigate('/tforgot');
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
     try {
-      const response = await axios.get(`${baseurl}/api/students/faculty/${course}/${semester}/${subject}`);
-      setStudents(response.data);
-    } catch (error) {
-      console.error('Error fetching students:', error);
-      setError('Error fetching students');
-    } finally {
-      setLoading(false);
-    }
-  };
+      const res = await fetch(`${baseurl}/api/classtutorlogin`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+       
+          body: JSON.stringify({
+            email: values.email,
+            password: values.password,
+         
+        }),
+      });
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    fetchStudents();
-  };
-
-  const handleInputChange = (studentId, key, value) => {
-    const updatedStudents = students.map(student => {
-      if (student._id === studentId) {
-        const updatedMarks = {
-          ...student.subjectMarks,
-          [key]: parseFloat(value) || 0,
-          totalMarks: calculateTotal(
-            student.subjectMarks.examMarks1,
-            student.subjectMarks.examMarks2,
-            student.subjectMarks.assignmentMarks1,
-            student.subjectMarks.assignmentMarks2,
-            student.subjectMarks.attendance
-          )
-        };
-        return { ...student, subjectMarks: updatedMarks };
+      if (!res.ok) {
+        const error = await res.json();
+        if (!isMounted.current) return;
+        return setErrors((prevErrors) => ({
+          ...prevErrors,
+          fetchError: true,
+          fetchErrorMsg: error.msg,
+        }));
       }
-      return student;
-    });
-    setStudents(updatedStudents);
-  };
 
-  const submitMarks = async (studentId, marks) => {
-    try {
-      marks.examMarks1 = parseFloat(marks.examMarks1) || 0;
-      marks.examMarks2 = parseFloat(marks.examMarks2) || 0;
-      marks.assignmentMarks1 = parseFloat(marks.assignmentMarks1) || 0;
-      marks.assignmentMarks2 = parseFloat(marks.assignmentMarks2) || 0;
-      marks.attendance = parseFloat(marks.attendance) || 0;
+      const data = await res.json();
 
-      await axios.post(`${baseurl}/api/marks`, { studentId, subject, marks });
-      console.log('Marks submitted successfully!');
+      if (data) {
+        // Redirect the officer to the office page
+       
+        localStorage.setItem('role', data.role);
+       
+        localStorage.setItem('email', data.email);
+      
+        if (!isMounted.current) return;
+        navigate('/thome');
+      } else {
+        if (!isMounted.current) return;
+        alert('Login failed.');
+        window.location.href = '/classtutorlogin';
+      }
+
+      if (isMounted.current) {
+        setValues({
+          email: '',
+          password: '',
+          showPassword: false,
+        });
+      }
     } catch (error) {
-      console.error('Error submitting marks:', error);
+      if (!isMounted.current) return;
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        fetchError: true,
+        fetchErrorMsg:
+          'There was a problem with our server, please try again later',
+      }));
     }
-  };
-
-  const calculateTotal = (examMarks1, examMarks2, assignmentMarks1, assignmentMarks2,attendancePercentage) => {
-    const averageExamMarks = (parseFloat(examMarks1) + parseFloat(examMarks2)) / 2;
-    const averageAssignmentMarks = (parseFloat(assignmentMarks1) + parseFloat(assignmentMarks2)) / 2;
-    return averageExamMarks + averageAssignmentMarks +  (parseFloat(attendancePercentage) || 0);
-  };
-
-  const handlePrint = () => {
-    window.print();
   };
 
   return (
-    <div>
-      <Navbar />
-      <div className={styles.formContainer}>
-        <form onSubmit={handleSubmit}>
-          <div>
-            <label>
-              Course:
-              <select value={course} onChange={(e) => setCourse(e.target.value)}>
-                <option value="">Select Course</option>
-                {courses.map(course => (
-                  <option key={course} value={course}>
-                    {course}
-                  </option>
-                ))}
-              </select>
-            </label>
+    <div className="login-background-image">
+      <div className="login-container">
+        <div className="login-form">
+          <div className="login-header-box">
+            <div className="login-header">
+              <div className="login-avatar">
+                <img
+                  src={`${process.env.PUBLIC_URL}/images/icon.png`}
+                  alt="Avatar"
+                  style={{ width: '70px', height: '70px', borderRadius: '50%' }}
+                />
+              </div>
+              <h2>Login</h2>
+            </div>
           </div>
+          <form className="login-fill" onSubmit={handleSubmit}>
+            <input
+              type="email"
+              placeholder="Email"
+              value={values.email}
+              onChange={handleChange('email')}
+              className={errors.email ? 'login-error' : ''}
+            />
+            {errors.email && (
+              <p className="login-error-text">Please insert a valid email address</p>
+            )}
 
-          <div>
-            <label>
-              Semester:
-              <select value={semester} onChange={(e) => setSemester(e.target.value)}>
-                <option value="">Select Semester</option>
-                {semesters.map(semester => (
-                  <option key={semester} value={semester}>
-                    {semester}
-                  </option>
-                ))}
-              </select>
-            </label>
-          </div>
-
-          <div>
-            <label>
-              Subject:
-              <select value={subject} onChange={(e) => setSubject(e.target.value)}>
-                <option value="">Select Subject</option>
-                {subjects.map(subject => (
-                  <option key={subject} value={subject}>
-                    {subject}
-                  </option>
-                ))}
-              </select>
-            </label>
-          </div>
-
-          <button type="submit">Fetch Students</button>
-        </form>
-      </div>
-
-      {loading && <div>Loading...</div>}
-      {error && <div className="error">{error}</div>}
-
-      {students.length > 0 && (
-        <div className={styles.tableContainer}>
-          <div id="printTable" className={styles.printTable}>
-            <table>
-              <thead>
-                <tr>
-                  <th>Student Name</th>
-                  <th>Course</th>
-                  <th>Semester</th>
-                  <th>Exam 1 Marks</th>
-                  <th>Exam 2 Marks</th>
-                  <th>Assignment 1 Marks</th>
-                  <th>Assignment 2 Marks</th>
-                  <th>Attendance</th>
-                  <th>Total Marks</th>
-                </tr>
-              </thead>
-              <tbody>
-                {students.map(student => {
-                  const subjectMarks = student.subjectMarks;
-                  return (
-                    <tr key={student._id}>
-                      <td>{student.name}</td>
-                      <td>{student.course}</td>
-                      <td>{student.semester}</td>
-                      <td>
-                        <input
-                          type="number"
-                          value={subjectMarks.examMarks1 || ''}
-                          onChange={(e) => handleInputChange(student._id, 'examMarks1', e.target.value)}
-                          onBlur={(e) => submitMarks(student._id, {
-                            ...subjectMarks,
-                            examMarks1: e.target.value,
-                            totalMarks: calculateTotal(
-                              e.target.value,
-                              subjectMarks.examMarks2,
-                              subjectMarks.assignmentMarks1,
-                              subjectMarks.assignmentMarks2,
-                              subjectMarks.attendance
-                            )
-                          })}
-                        />
-                      </td>
-                      <td>
-                        <input
-                          type="number"
-                          value={subjectMarks.examMarks2 || ''}
-                          onChange={(e) => handleInputChange(student._id, 'examMarks2', e.target.value)}
-                          onBlur={(e) => submitMarks(student._id, {
-                            ...subjectMarks,
-                            examMarks2: e.target.value,
-                            totalMarks: calculateTotal(
-                              subjectMarks.examMarks1,
-                              e.target.value,
-                              subjectMarks.assignmentMarks1,
-                              subjectMarks.assignmentMarks2,
-                              subjectMarks.attendance
-                            )
-                          })}
-                        />
-                      </td>
-                      <td>
-                        <input
-                          type="number"
-                          value={subjectMarks.assignmentMarks1 || ''}
-                          onChange={(e) => handleInputChange(student._id, 'assignmentMarks1', e.target.value)}
-                          onBlur={(e) => submitMarks(student._id, {
-                            ...subjectMarks,
-                            assignmentMarks1: e.target.value,
-                            totalMarks: calculateTotal(
-                              subjectMarks.examMarks1,
-                              subjectMarks.examMarks2,
-                              e.target.value,
-                              subjectMarks.assignmentMarks2,
-                              subjectMarks.attendance
-                            )
-                          })}
-                        />
-                      </td>
-                      <td>
-                        <input
-                          type="number"
-                          value={subjectMarks.assignmentMarks2 || ''}
-                          onChange={(e) => handleInputChange(student._id, 'assignmentMarks2', e.target.value)}
-                          onBlur={(e) => submitMarks(student._id, {
-                            ...subjectMarks,
-                            assignmentMarks2: e.target.value,
-                            totalMarks: calculateTotal(
-                              subjectMarks.examMarks1,
-                              subjectMarks.examMarks2,
-                              subjectMarks.assignmentMarks1,
-                              e.target.value,
-                              subjectMarks.attendance
-                            )
-                          })}
-                        />
-                      </td>
-                      <td>{subjectMarks.attendance}</td>
-                      <td>{calculateTotal(subjectMarks.examMarks1, subjectMarks.examMarks2, subjectMarks.assignmentMarks1, subjectMarks.assignmentMarks2, subjectMarks.attendance)}</td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-          <div className={styles.printButtonContainer}>
-            <button onClick={handlePrint}>Print</button>
-          </div>
+            <div className="login-password-field">
+              <div className="password-input-container">
+                <input
+                  type={values.showPassword ? 'text' : 'password'}
+                  placeholder="Password"
+                  value={values.password}
+                  onChange={handleChange('password')}
+                  className={errors.password ? 'login-error' : ''}
+                />
+              </div>
+            </div>
+            <div className="forgot-show-password-links">
+              <span className="show-password-link" onClick={handleShowPassword}>
+                {values.showPassword ? 'Hide' : 'Show'} Password
+              </span>
+              <a href="/tforgot" onClick={handleForgotPassword} className="forgot-password-link">
+                Forgot Password?
+              </a>
+            </div>
+            <div className="login-button-container">
+              <button type="submit" disabled={errors.email || errors.password}>
+                Login
+              </button>
+            </div>
+            <div className="signup-link">
+              <p>
+                Not yet registered? <Link to="/classtutoresignup">Sign up</Link>
+              </p>
+            </div>
+            {errors.fetchError && <p className="login-error-text">{errors.fetchErrorMsg}</p>}
+          </form>
         </div>
-      )}
+      </div>
     </div>
   );
-};
+}
 
+export default AdminLogin;

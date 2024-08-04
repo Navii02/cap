@@ -77,7 +77,7 @@ const ApprovedStudentSchema = new mongoose.Schema({
     passportsizephoto: { type: Boolean, default: false },
     incomecertificates: { type: Boolean, default: false },
     communitycertificate: { type: Boolean, default: false },
-    castecertificates: { type: Boolean, default: false },
+    castecertificate: { type: Boolean, default: false },
     aadhaar: { type: Boolean, default: false },
     other: { type: Boolean, default: false },
   },

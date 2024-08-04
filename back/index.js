@@ -6,6 +6,7 @@ const cors = require('cors');
 require('dotenv').config()
 const mongoose = require('mongoose')
 const cron = require('node-cron');
+const connectDB = require('./db');
 const transferDataToAlumni = require('./api/transferDataToAlumni');
 const MongoDBStore = require('connect-mongodb-session')(session) 
 const port = process.env.PORT || 5000;
@@ -84,42 +85,12 @@ const Feereminder = require('./api/feereminder')
 const app = express();
 const MAX_AGE = 1000 * 60 * 60 * 3 //3hrs
 const corsOptions = {
-origin: 'https://cap-three.vercel.app',
-   //origin: 'http://localhost:4000',
+
+  origin: 'http://localhost:3000',
   optionSuccessStatus:200,
 }
-mongoose.Promise = global.Promise
-mongoose.connect(process.env.DATABASE_CONNECTION_STRING, {
-  useNewUrlParser: true,
 
-});
-
-
-
-// setting up connect-mongodb-session store
-const mongoDBstore = new MongoDBStore({
-    uri: process.env.DATABASE_CONNECTION_STRING,
-    
-    
-    
-  })
-  console.log("mongo is connected");
-  app.use(
-    session({
-      secret: 'a1s2d3f4g5h6',
-      name: 'session-id', // cookies name to be put in "key" field in postman
-      store: mongoDBstore,
-      cookie: {
-        maxAge: MAX_AGE, // this is when our cookies will expired and the session will not be valid anymore (user will be log out)
-        sameSite: false,
-        secure: false, // to turn on just in production
-      },
-      resave: true,
-      saveUninitialized: false,
-    })
-  )
-  
-
+connectDB();
 
 app.use(bodyParser.json())
 app.use(cors(corsOptions))
@@ -206,6 +177,6 @@ app.use('/images', express.static(path.join(__dirname, 'uploads'), {
 app.use('/api', express.static('certificate'));
 
 app.listen(port, () => {
-  console.log(`Server is running`);
+  console.log(`Server is running on port ${port}`);
 });
 module.exports =app

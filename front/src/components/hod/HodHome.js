@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Navbar from './HodNavbar'; // Assuming you have a Navbar component for HOD
 import './HodHome.css'; // Import your CSS file
-import {baseurl} from '../../url';
+
 
 function HodHome() {
   const [hodName, setHodName] = useState('');
@@ -13,7 +13,7 @@ function HodHome() {
   useEffect(() => {
     const fetchData = async () => {
       const hodEmail = localStorage.getItem('email'); // Assuming email is stored in localStorage
-      //console.log('HOD Email:', hodEmail);
+      
 
       if (!hodEmail) {
         console.error('HOD email not found in localStorage');
@@ -21,26 +21,20 @@ function HodHome() {
       }
 
       try {
-        const response = await axios.get(`${baseurl}/api/hod-profile?email=${hodEmail}`);
-        //console.log('Full Response:', response);
+        const response = await axios.get(`/api/hod-profile?email=${hodEmail}`);
+     
 
         const hodName = response.data.teachername; // Assuming name property in HOD profile
         const departmentName = response.data.department;
         const teacherCounts = response.data.teacherCounts; // Use the actual property name
        
-        /*console.log('Received Data:', {
-          hodName,
-          departmentName,
-          teacherCounts,
-          studentCounts,
-        });*/
-
+    
         setHodName(hodName);
         setDepartmentName(departmentName);
         setTeacherCounts(teacherCounts);
         
 
-        //console.log('HOD:', hodName);
+      
       } catch (error) {
         console.error('Error fetching HOD profile:', error);
       }

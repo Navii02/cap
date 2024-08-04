@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { baseurl } from '../../url';
+
 import './Performance.css';
 import Navbar from './TutorNavbar';
 
@@ -20,8 +20,8 @@ const StudentPerformancePage = () => {
         return;
       }
 
-      const response = await axios.get(`${baseurl}/api/student-performance/${tutorclass}/${academicYear}`);
-      console.log('Fetched data:', response.data);
+      const response = await axios.get(`/api/student-performance/${tutorclass}/${academicYear}`);
+   
 
       // Check if RollNo exists in the data
       if (response.data.length > 0 && !response.data[0].hasOwnProperty('RollNo')) {

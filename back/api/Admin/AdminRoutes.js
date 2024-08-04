@@ -60,7 +60,7 @@ router.post('/adminregister', async (req, res) => {
             console.error(error);
             return res.status(500).json({ msg: 'Error sending confirmation email' });
           } else {
-            console.log('Email sent: ' + info.response);
+           
             return res.status(200).json({ msg: 'User is successfully saved' });
           }
         });

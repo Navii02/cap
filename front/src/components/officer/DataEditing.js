@@ -3,7 +3,7 @@ import axios from "axios";
 import Navbar from "./OfficerNavbar";
 import "./DataEditing.css";
 import Modal from "react-modal";
-import { baseurl } from "../../url";
+
 
 Modal.setAppElement("#root");
 
@@ -234,7 +234,7 @@ const DataEntryForm = ({ fetchStudents, onDataEntered }) => {
       setFormData({ ...formData, [name]: value });
     }
   };
-  console.log("Form Data:", formData);
+  
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -254,12 +254,12 @@ const DataEntryForm = ({ fetchStudents, onDataEntered }) => {
     }
   
     try {
-      const response = await axios.post(
-        `${baseurl}/api/studentadmission`,
+    await axios.post(
+        `/api/studentadmission`,
         sendData,
         { headers: { "Content-Type": "multipart/form-data" } }
       );
-      console.log("Data submitted successfully:", response.data);
+      
       setFormData({ ...initialFormData });
       setErrorMessage("Data submitted successfully"); // Use the same state variable for success message
       setModalIsOpen(true); // Open the modal on success
@@ -286,7 +286,7 @@ const DataEntryForm = ({ fetchStudents, onDataEntered }) => {
       <Navbar />
       <div className="data-entry-container">
         <div className="page-title">Admission Form</div>
-        <hr class="divider"></hr>
+        <hr className="divider"></hr>
         <form className="form" onSubmit={handleSubmit}>
           <div className="row">
             <div className="form-group">
@@ -971,7 +971,7 @@ const DataEntryForm = ({ fetchStudents, onDataEntered }) => {
                 onChange={handleChange}
               />
               <span className="checkmark"></span>
-              <label htmlFor="aadhaar">Copy of Aadhaar Card</label>
+              <label htmlFor="aadhaar">Copy of aadhaar Card</label>
             </div>
             <div className="checkbox-custom">
               <input

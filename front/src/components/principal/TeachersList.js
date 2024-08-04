@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import PrinciNavbar from './PrinciNavbar';
-import {baseurl} from '../../url';
 
 function TeacherPage() {
     const [teachers, setTeachers] = useState([]);
@@ -12,7 +11,7 @@ function TeacherPage() {
 
     const fetchTeacherData = async () => {
         try {
-            const response = await fetch(`${baseurl}/api/teachers`);
+            const response = await fetch(`/api/teachers`);
             const data = await response.json();
             setTeachers(data); // Assuming the data is an array of teacher objects
         } catch (error) {
@@ -31,7 +30,7 @@ function TeacherPage() {
 
     return (
         <div>
-           <PrinciNavbar/>
+           <PrinciNavbar />
             <div className="student-display-container">
                 <label htmlFor="departmentSelect">Select Department: </label>
                 <select id="departmentSelect" value={selectedDepartment} onChange={handleDepartmentChange}>
@@ -39,8 +38,7 @@ function TeacherPage() {
                     <option value="CS">CS</option>
                     <option value="EC">EC</option>
                     <option value="EE">EE</option>
-                    <option value="Aplied Science">Aplied Science</option>
-         
+                    <option value="Applied Science">Applied Science</option>
                     {/* Add more options for other departments */}
                 </select>
             </div>

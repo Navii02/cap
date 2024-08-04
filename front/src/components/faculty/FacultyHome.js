@@ -1,7 +1,7 @@
 // FacultyHome.js
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import {baseurl} from '../../url';
+
 import Navbar from "./FacultyNavbar";
 import "./FacultyHome.css";
 
@@ -14,25 +14,19 @@ function FacultyHome() {
   useEffect(() => {
     const fetchData = async () => {
       const userEmail = localStorage.getItem('email');
-      console.log('User Email:', userEmail);
-
+      
       if (!userEmail) {
         console.error('User email not found in localStorage');
         return;
       }
 
       try {
-        const response = await axios.get(`${baseurl}/api/teacher-profile?email=${userEmail}`);
-        console.log('Full Response:', response);
+        const response = await axios.get(`/api/teacher-profile?email=${userEmail}`);
+        
 
         const { teachername, branches, semesters, subjects } = response.data;
 
-        console.log('Received Data:', {
-          teachername,
-          branches,
-          semesters,
-          subjects,
-        });
+     
 
         // Set state with the fetched data
         setTeacherName(teachername);
@@ -45,7 +39,7 @@ function FacultyHome() {
         localStorage.setItem('semesters', JSON.stringify(semesters));
         localStorage.setItem('subjects', JSON.stringify(subjects));
 
-        console.log('User:', teachername);
+        
       } catch (error) {
         console.error('Error fetching teacher profile:', error);
       }
@@ -56,7 +50,7 @@ function FacultyHome() {
 
   useEffect(() => {
     // Log the updated state
-    console.log('User:', teachername);
+    
   }, [teachername]);
 
   return (

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import PrinciNavbar from './PrinciNavbar';
-import { baseurl } from '../../url';
+
 
 function StudentPage() {
   const [students, setStudents] = useState([]);
@@ -16,7 +16,7 @@ function StudentPage() {
 
   const fetchAlumniData = useCallback(async () => {
     try {
-      const url = new URL(`${baseurl}/api/principal/alumni`);
+      const url = new URL(`/api/principal/alumni`);
       const params = new URLSearchParams();
       
       if (selectedAlumniCourse) {
@@ -52,9 +52,9 @@ function StudentPage() {
 
   const fetchStudentData = async () => {
     try {
-      const response = await fetch(`${baseurl}/api/principal/student`);
+      const response = await fetch(`/api/principal/student`);
       const data = await response.json();
-      console.log('Fetched student data:', data);
+     
       setStudents(data);
     } catch (error) {
       console.error('Error fetching student data:', error);

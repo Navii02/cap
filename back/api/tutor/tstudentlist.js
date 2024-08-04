@@ -86,7 +86,7 @@ router.put('/students/semester/:department/:academicYear', async (req, res) => {
       { course: department, academicYear },
       { $set: { semester } }
     );
-    console.log('Update result:', result);
+   
     res.json(result);
   } catch (error) {
     console.error('Error updating semesters:', error);

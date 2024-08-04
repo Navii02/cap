@@ -54,7 +54,7 @@ function HodNavbar() {
               </Link>
             </li>
             <li className='nav-item dropdown'>
-              <Link to='/teacher-details' className='nav-links' onClick={closeMobileMenu}>
+              <Link to='/hteacher-details' className='nav-links' onClick={closeMobileMenu}>
                 Faculty<i className='fas fa-caret-down' />
               </Link>
               <div className='dropdown-content'>

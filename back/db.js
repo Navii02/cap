@@ -1,9 +1,17 @@
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
+require('dotenv').config();
 
-mongoose.connect('mongodb+srv://naveenshaji02:naveen@collegeofficedata.scsxkdd.mongodb.net/Office',{useNewUrlParser:true,useUnifiedTopology:true},
-    err => {
-        if (!err)
-            console.log('Mongodb connection succeeded.')
-        else
-            console.log('Error while connecting MongoDB : ' + JSON.stringify(err, undefined, 2))
-    })
+const connectDB = async () => {
+  try {
+    await mongoose.connect(process.env.DATABASE_CONNECTION_STRING, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    console.log('MongoDB connected');
+  } catch (err) {
+    console.error(err.message);
+    process.exit(1);
+  }
+};
+
+module.exports = connectDB;

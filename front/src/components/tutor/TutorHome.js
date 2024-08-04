@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { baseurl } from "../../url";
+
 import Navbar from "./TutorNavbar";
 import "./TutorHome.css"; // Import your CSS file
 
@@ -23,11 +23,11 @@ function TutorHome() {
 
       try {
         // Fetch tutor profile details
-        const response = await axios.get(`${baseurl}/api/tutor-profile?email=${tutorEmail}`);
+        const response = await axios.get(`/api/tutor-profile?email=${tutorEmail}`);
         const { teachername, tutorclass, subjects } = response.data;
 
         // Fetch number of students based on academic year and course
-        const studentsResponse = await axios.get(`${baseurl}/api/students-count?academicYear=${academicYear}&course=${course}`);
+        const studentsResponse = await axios.get(`/api/students-count?academicYear=${academicYear}&course=${course}`);
         const { totalStudents } = studentsResponse.data;
 
         setTutorName(teachername);
@@ -35,8 +35,7 @@ function TutorHome() {
         setSubjectsCovered(subjects);
         setTotalStudents(totalStudents);
 
-        console.log('Tutor:', teachername);
-        console.log('Total Students:', totalStudents);
+
       } catch (error) {
         console.error('Error fetching tutor profile or student count:', error);
       }
@@ -47,7 +46,6 @@ function TutorHome() {
 
   useEffect(() => {
     // Log the updated state
-    console.log('Tutor:', teachername);
   }, [teachername]);
 
   return (

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Navbar from './OfficerNavbar';
 import './OfficeHome.css';
-import { baseurl } from '../../url';
+
 
 function OfficeHome() {
   const [officerName, setOfficerName] = useState('');
@@ -12,7 +12,7 @@ function OfficeHome() {
   useEffect(() => {
     const fetchOfficerProfile = async () => {
       const userEmail = localStorage.getItem('email');
-      console.log('User Email:', userEmail);
+ 
 
       if (!userEmail) {
         console.error('User email not found in localStorage');
@@ -21,8 +21,8 @@ function OfficeHome() {
       }
 
       try {
-        const response = await axios.get(`${baseurl}/api/officerprofile/${userEmail}`);
-        console.log('Officer Profile Response:', response.data);
+        const response = await axios.get(`/api/officerprofile/${userEmail}`);
+   
 
         const { name, post } = response.data;
 

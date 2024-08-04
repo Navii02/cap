@@ -29,7 +29,7 @@ const handleNoticeUpload = async (req, res) => {
     });
 
     await newNotice.save();
-    console.log("Success");
+  
 
     res.json({ message: 'Notice added successfully' });
   } catch (error) {

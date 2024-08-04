@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Navbar from './UserNavbar';
 import './reminders.css';
-import { baseurl } from '../../url';
+
 import Loading from './Loading'; // Import the Loading component
 
 const Reminders = () => {
@@ -16,7 +16,7 @@ const Reminders = () => {
   const course = localStorage.getItem('course');
   const semester = localStorage.getItem('semester');
   const currentYear = new Date().getFullYear(); // Get the current year
-  console.log(course, semester, currentYear);
+ 
 
   useEffect(() => {
     const categories = ['attendance', 'internalMarks', 'assignments', 'updates'];
@@ -26,23 +26,23 @@ const Reminders = () => {
 
       switch (category) {
         case 'attendance':
-          apiEndpoint = `${baseurl}/api/reminders/${category}?email=${userEmail}&course=${course}`;
+          apiEndpoint = `/api/reminders/${category}?email=${userEmail}&course=${course}`;
           break;
         case 'assignments':
-          apiEndpoint = `${baseurl}/api/reminders/${category}?course=${course}&semester=${semester}&currentyear=${currentYear}`;
+          apiEndpoint = `/api/reminders/${category}?course=${course}&semester=${semester}&currentyear=${currentYear}`;
           break;
         case 'internalMarks':
-          apiEndpoint = `${baseurl}/api/reminders/${category}?email=${userEmail}&course=${course}`;
+          apiEndpoint = `/api/reminders/${category}?email=${userEmail}&course=${course}`;
           break;
         default:
-          apiEndpoint = `${baseurl}/api/reminders/${category}/${userEmail}`;
+          apiEndpoint = `/api/reminders/${category}/${userEmail}`;
       }
 
       try {
         const response = await axios.get(apiEndpoint);
         const fetchedReminders = response.data;
 
-        console.log(`Fetched ${category} reminders:`, fetchedReminders);
+        
 
         switch (category) {
           case 'attendance':

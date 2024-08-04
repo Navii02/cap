@@ -33,9 +33,9 @@ app.get('/student/:email', (req, res) => {
 });
 // Route to get the Firebase Storage URL of an image
 app.get('/notices/:photoPath', async (req, res) => {
-  console.log(req.params.image)
+
   const image = req.params.photoPath;
-  console.log(image)
+
   try {
     const file = bucket.file(`notices/${image}`);
     const [exists] = await file.exists();

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Navbar from './PrinciNavbar';
-import {baseurl} from '../../url';
+
 import './Hodassign.css'; // Import CSS file for styling
 
 const TeacherList = () => {
@@ -26,7 +26,7 @@ const TeacherList = () => {
   }, []);
 
   const fetchTeachers = () => {
-    axios.get(`${baseurl}/api/hod/teachers`)
+    axios.get(`/api/hod/teachers`)
       .then(response => {
         setTeachers(response.data);
       })
@@ -36,7 +36,7 @@ const TeacherList = () => {
   };
 
   const fetchHODs = () => {
-    axios.get(`${baseurl}/api/hod/hods`)
+    axios.get(`/api/hod/hods`)
       .then(response => {
         setHods(response.data);
       })
@@ -49,7 +49,7 @@ const TeacherList = () => {
     const selectedTeacher = teachers.find(teacher => teacher._id === teacherId);
     if (!selectedTeacher) return;
 
-    axios.post(`${baseurl}/api/hod/assign`, { teacherId, department: selectedTeacher.department })
+    axios.post(`/api/hod/assign`, { teacherId, department: selectedTeacher.department })
       .then(response => {
         console.log('HOD assigned successfully:', response.data);
         setAssignedTeacher(response.data.teachername);
@@ -62,6 +62,19 @@ const TeacherList = () => {
       });
   };
 
+  const deassignHOD = (hodId) => {
+    axios.post(`/api/hod/deassign`, { hodId })
+      .then(response => {
+        console.log('HOD de-assigned successfully:', response.data);
+        setAssignedTeacher(null);
+        fetchTeachers();
+        fetchHODs();
+      })
+      .catch(error => {
+        console.error('Error de-assigning HOD:', error);
+      });
+  };
+
   const handleAddHodChange = (e) => {
     const { name, value } = e.target;
     setNewHod((prevNewHod) => ({ ...prevNewHod, [name]: value }));
@@ -69,9 +82,8 @@ const TeacherList = () => {
 
   const handleAddHodSubmit = (e) => {
     e.preventDefault();
-    axios.post(`${baseurl}/api/admin/addTeacher`, newHod)
+    axios.post(`/api/admin/addTeacher`, newHod)
       .then(response => {
-        console.log('HOD added successfully:', response.data);
         setShowAddHodForm(false);
         setNewHod({
           teachername: '',
@@ -120,14 +132,15 @@ const TeacherList = () => {
           </div>
         )}
 
-        <div className="teacher-list-container">
+        <div className="hod-list-container">
           <h3>List of HODs</h3>
           <ul>
             {hods.map(hod => (
               <li key={hod._id} className="hod-item">
                 <strong>Name:</strong> {hod.teachername}<br />
                 <strong>Department:</strong> {hod.department}<br />
-                <strong>Email:</strong> {hod.email}
+                <strong>Email:</strong> {hod.email}<br />
+                <button className="deassign-button" onClick={() => deassignHOD(hod._id)}>De-Assign</button>
               </li>
             ))}
           </ul>
@@ -153,62 +166,20 @@ const TeacherList = () => {
                 placeholder="Email"
                 value={newHod.email}
                 onChange={handleAddHodChange}
-              
+                required
               />
-              <input
-                type="text"
-                name="branches"
-                placeholder="Branches"
-                value={newHod.branches}
-                onChange={handleAddHodChange}
-             
-              />
-              <select
-                name="semesters"
-                value={newHod.semesters}
-                onChange={handleAddHodChange}
-             
-              >
-                <option value="">Select Semester</option>
-                <option value="1">Semester 1</option>
-                <option value="2">Semester 2</option>
-                <option value="3">Semester 3</option>
-                <option value="4">Semester 4</option>
-                <option value="5">Semester 5</option>
-                <option value="6">Semester 6</option>
-                <option value="7">Semester 7</option>
-                <option value="8">Semester 8</option>
-              </select>
               <select
                 name="department"
                 value={newHod.department}
                 onChange={handleAddHodChange}
-              required
+                required
               >
                 <option value="">Select Department</option>
                 <option value="CS">CS</option>
                 <option value="EC">EC</option>
                 <option value="EE">EE</option>
-                <option value="Aplied Science">Aplied Science</option>
-                
+                <option value="Applied Science">Applied Science</option>
               </select>
-              <input
-                type="text"
-                name="subjects"
-                placeholder="Subjects"
-                value={newHod.subjects}
-                onChange={handleAddHodChange}
-              
-              />
-              <input
-                type="text"
-                name="subjectCode"
-                placeholder="Subject Code"
-                value={newHod.subjectCode}
-                onChange={handleAddHodChange}
-              
-              />
-              
               <button type="submit">Add HOD</button>
               <button type="button" className="cancel-button" onClick={() => setShowAddHodForm(false)}>Cancel</button>
             </form>

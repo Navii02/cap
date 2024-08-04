@@ -26,49 +26,49 @@ function Footer  ()  {
           </form>*/}
         </div>
       </section>
-      <div class='footer-links'>
+      <div className='footer-links'>
         <div className='footer-link-wrapper'>
-          <div class='footer-link-items'>
+          <div className='footer-link-items'>
             <Button buttonStyle='btn--outline'><Link to="/about-us">About Us</Link></Button>
           </div>
-          <div class='footer-link-items'>
+          <div className='footer-link-items'>
           <Button buttonStyle='btn--outline'><Link to="/contact">Contact Us</Link></Button>
         </div>
         </div>
         </div>
-      <section class='social-media'>
-        <div class='social-media-wrap'>
-          <div class='footer-logo'>
+      <section className='social-media'>
+        <div className='social-media-wrap'>
+          <div className='footer-logo'>
             <Link to='https://cep.ac.in/' className='social-logo'>
               CAP
-              <i class='fa fa-graduation-cap' />
+              <i className='fa fa-graduation-cap' />
             </Link>
           </div>
-          <small class='website-rights'>College Of Engineering Poonjar © 2024</small>
-          <div class='social-icons'>
+          <small className='website-rights'>College Of Engineering Poonjar © 2024</small>
+          <div className='social-icons'>
             <Link
-              class='social-icon-link facebook'
+              className='social-icon-link facebook'
               to='https://www.facebook.com/profile.php?id=100013005493803&mibextid=ZbWKwL'
               target='_blank'
               aria-label='Facebook'
             >
-              <i class='fab fa-facebook-f' />
+              <i className='fab fa-facebook-f' />
             </Link>
             <Link
-              class='social-icon-link instagram'
+              className='social-icon-link instagram'
               to='https://www.instagram.com/cepoonjar?igsh=czRhMmVtZ3l6ZnJw'
               target='_blank'
               aria-label='Instagram'
             >
-              <i class='fab fa-instagram' />
+              <i className='fab fa-instagram' />
             </Link>
             <Link
-              class='social-icon-link youtube'
+              className='social-icon-link youtube'
               to='https://youtube.com/@cepfilmsociety?si=1IQzud2MvnvWl0z_'
               target='_blank'
               aria-label='Youtube'
             >
-              <i class='fab fa-youtube' />
+              <i className='fab fa-youtube' />
             </Link>
             {/*<Link
               class='social-icon-link twitter'
@@ -79,12 +79,12 @@ function Footer  ()  {
               <i class='fab fa-twitter' />
             </Link>*/}
             <Link
-              class='social-icon-link twitter'
+              className='social-icon-link twitter'
               to='https://www.linkedin.com/school/college-of-engineering-poonjar-kottayam/'
               target='_blank'
               aria-label='LinkedIn'
             >
-              <i class='fab fa-linkedin' />
+              <i className='fab fa-linkedin' />
             </Link>
           </div>
         </div>

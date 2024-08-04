@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Navbar from "./OfficerNavbar";
 import "./DataTable.css";
-import { baseurl } from "../../url";
+
 
 const StudentList = () => {
   const [students, setStudents] = useState([]);
@@ -91,7 +91,7 @@ const StudentList = () => {
     const fetchStudents = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(`${baseurl}/api/studentAdmission`);
+        const response = await axios.get(`/api/studentAdmission`);
         const sortedStudents = response.data.sort(
           (a, b) => new Date(b.submissionDate) - new Date(a.submissionDate)
         );
@@ -116,7 +116,7 @@ const StudentList = () => {
       try {
         const courses = ["B.Tech CSE", "B.Tech ECE", "BBA", "BCA", "MCA"];
         const response = await axios.post(
-          `${baseurl}/api/lastAdmissionNumbers`,
+          `/api/lastAdmissionNumbers`,
           { courses }
         );
 
@@ -272,7 +272,7 @@ const StudentList = () => {
     e.preventDefault();
     try {
       await axios.put(
-        `${baseurl}/api/datatable/updateStudent/${studentId}`,
+        `/api/datatable/updateStudent/${studentId}`,
         formData
       );
       setIsSuccess(true);
@@ -292,7 +292,7 @@ const StudentList = () => {
         editableNumbers[course] || lastAdmissionNumbers[course];
 
       // Send the admission number with the API request
-      await axios.post(`${baseurl}/api/approve/${studentId}`, {
+      await axios.post(`/api/approve/${studentId}`, {
         admissionNumber,
       });
       setStudents((prevStudents) =>
@@ -309,7 +309,7 @@ const StudentList = () => {
     if (!confirm) return;
   
     try {
-      await axios.post(`${baseurl}/api/decline/${studentId}`);
+      await axios.post(`/api/decline/${studentId}`);
       setStudents((prevStudents) =>
         prevStudents.filter((student) => student._id !== studentId)
       );
@@ -323,8 +323,8 @@ const StudentList = () => {
 
   const handlePrintPreview = async (_id, photoPath) => {
     try {
-      const photoUrl = `${baseurl}/api/image/${encodeURIComponent(photoPath)}`;
-      const response = await axios.get(`${baseurl}/api/studentDetails/${_id}`);
+      const photoUrl = `/api/image/${encodeURIComponent(photoPath)}`;
+      const response = await axios.get(`/api/studentDetails/${_id}`);
     
       const studentDetails = response.data.studentDetails;
       const feeDetails = response.data.studentDetails.feeDetails;
@@ -729,7 +729,7 @@ const StudentList = () => {
       </tr>
       <tr>
         <td>Data Sheet</td>
-        <td>${studentDetails.certificates.DataSheet ? "Yes" : "No"}</td>
+        <td>${studentDetails.certificates.Datasheet ? "Yes" : "No"}</td>
         <td>Physical Fitness</td>
         <td>${studentDetails.certificates.physicalfitness ? "Yes" : "No"}</td>
       </tr>
@@ -744,11 +744,11 @@ const StudentList = () => {
    <td>Community Certificate</td>
     <td> ${studentDetails.certificates.communitycertificate ? "Yes" : "No"}</td>
    <td>caste Certificate</td>
-    <td>${studentDetails.certificates.castecertificates ? "Yes" : "No"}</td>
+    <td>${studentDetails.certificates.castecertificate ? "Yes" : "No"}</td>
    </tr>
    <tr> 
-    <td> Copy Of Aadhaar Card</td>
-    <td>${studentDetails.certificates.aadhar ? "Yes" : "No"}</td>
+    <td> Copy Of aadhaar Card</td>
+    <td>${studentDetails.certificates.aadhaar ? "Yes" : "No"}</td>
     <td> Other Certificates</td>
     <td>${studentDetails.certificates.other ? "Yes" : "No"}</td>
     </tr>
@@ -1019,11 +1019,11 @@ const StudentList = () => {
         plusTwo: student.certificates.plusTwo,
         tcandconduct: student.certificates.tcandconduct,
         allotmentmemo:student.certificates.allotmentmemo,
-        Datasheet:student.certificates.datasheet,
+        Datasheet:student.certificates.Datasheet,
         physicalfitness: student.certificates.physicalfitness,
         passportsizephoto:student.certificates.passportsizephoto,
         incomecertificates: student.certificates.incomecertificates,
-        communitycertificate: student.certificates.communitycert,
+        communitycertificate: student.certificates.communitycertificate,
         castecertificate: student.certificates.castecertificate,
         aadhaar:  student.certificates.aadhaar,
         other: student.certificates.other,
@@ -1043,7 +1043,7 @@ const StudentList = () => {
 
   const handleSave = async () => {
     try {
-      await axios.put(`${baseurl}/api/updateStudent/${studentId}`, formData);
+      await axios.put(`/api/updateStudent/${studentId}`, formData);
       setIsSuccess(true);
       setEditMode(false);
     } catch (error) {
@@ -1148,7 +1148,7 @@ const StudentList = () => {
             </button>
             <div className="data-entry-container">
               <div className="page-title">Admission Form</div>
-              <hr class="divider"></hr>
+              <hr className="divider"></hr>
               <form className="form" onSubmit={handleSubmit}>
                 <div className="form-group">
                   <label>Fee Category:</label>
@@ -1771,7 +1771,7 @@ const StudentList = () => {
                 onChange={handleInputChange}
               />
               <span className="checkmark"></span>
-              <label htmlFor="aadhaar">Copy of Aadhaar Card</label>
+              <label htmlFor="aadhaar">Copy of aadhaar Card</label>
             </div>
             <div className="checkbox-custom">
               <input
@@ -1834,10 +1834,10 @@ const StudentList = () => {
             </div>
           </div>
                 <div className="button-container">
-                  <button class="submit-button" onClick={handleSave}>
+                  <button className="submit-button" onClick={handleSave}>
                     Save
                   </button>
-                  <button class="clear-button" onClick={handleCancel}>
+                  <button className="clear-button" onClick={handleCancel}>
                     Cancel
                   </button>
                 </div>

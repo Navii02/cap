@@ -33,11 +33,10 @@ router.get('/hod/hods', async (req, res) => {
   }
 });
 
-/// Route to assign a teacher as HOD and handle the HOD turn for specific branch
+// Route to assign a teacher as HOD and handle the HOD turn for a specific department
 router.post('/hod/assign', async (req, res) => {
   try {
     const { teacherId, department } = req.body;
-    console.log(teacherId, department);
 
     // Find the teacher to be assigned as HOD
     const teacher = await Teacher.findById(teacherId);
@@ -53,10 +52,10 @@ router.post('/hod/assign', async (req, res) => {
     teacher.isHOD = true;
     await teacher.save();
 
-    // Find and update the existing HOD for the specified course
-    const existingHOD = await HodDetails.findOne({ department:department, isHOD: true });
+    // Find and update the existing HOD for the specified department
+    const existingHOD = await HodDetails.findOne({ department: department, isHOD: true });
     if (existingHOD) {
-      // If an existing HOD is found for the specified course, make them no longer an HOD
+      // If an existing HOD is found for the specified department, make them no longer an HOD
       existingHOD.isHOD = false;
       await existingHOD.save();
 
@@ -77,9 +76,8 @@ router.post('/hod/assign', async (req, res) => {
       subjectCode: teacher.subjectCode,
       branches: teacher.branches,
       semesters: teacher.semesters,
-      department:department, // Assign the specific course here
+      department: department,
       isHOD: true,
-      // Add other relevant HOD details here (e.g., department, designation)
     });
     await newHodDetails.save();
 
@@ -93,5 +91,35 @@ router.post('/hod/assign', async (req, res) => {
   }
 });
 
+// Route to de-assign an HOD
+router.post('/hod/deassign', async (req, res) => {
+  try {
+    const { hodId } = req.body;
+
+    // Find the HOD to be de-assigned
+    const hod = await HodDetails.findById(hodId);
+    if (!hod) {
+      return res.status(404).json({ error: 'HOD not found' });
+    }
+
+    // Mark the HOD as no longer an HOD
+    hod.isHOD = false;
+    await hod.save();
+
+    // Update the teacher's isHOD flag in the TeachersDetailSchema
+    const teacher = await Teacher.findById(hod.teacherId);
+    if (teacher) {
+      teacher.isHOD = false;
+      await teacher.save();
+    }
+
+    res.status(200).json({
+      message: 'HOD de-assigned successfully',
+    });
+  } catch (error) {
+    console.error('Error de-assigning HOD:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
 
 module.exports = router;

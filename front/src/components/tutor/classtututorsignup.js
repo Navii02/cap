@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import validator from 'validator';
-import {baseurl} from '../../url';
+
 import '../signup.css';
 
 function useTutorSignup() {
@@ -60,7 +60,7 @@ function useTutorSignup() {
     event.preventDefault();
 
     try {
-      const res = await fetch(`${baseurl}/api/classtutorregister`, {
+      const res = await fetch(`/api/classtutorregister`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -82,10 +82,9 @@ function useTutorSignup() {
         });
       }
 
-      const data = await res.json();
-
+      
       // Handle successful registration (redirect or show a success message)
-      console.log(data);
+      
 
       setValues({
         name: '',
