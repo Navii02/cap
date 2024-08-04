@@ -19,7 +19,7 @@ import OfficerSignup from './components/officer/OfficerSignup';
 import Officerlogin from './components/officer/Officerlogin';
 import DataEntryForm from './components/officer/DataEditing';
 import DataViewEdit from './components/officer/DataTable';
-import FeeReminders from './components/officer/FeeReminders';
+
 import NoticeUpdates from './components/officer/NoticeUpdates';
 import OfficeHome from './components/officer/OfficeHome';
 import PaymentAndReminders from './components/officer/PaymentAndReminders';
@@ -194,14 +194,7 @@ function RoutesComp() {
             </PrivateRoute>
           }
         />
-        <Route
-          path='/fee-reminders'
-          element={
-            <PrivateRoute>
-              <FeeReminders />
-            </PrivateRoute>
-          }
-        />
+     
         <Route
           path='/notice-updates'
           element={

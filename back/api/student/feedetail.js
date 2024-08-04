@@ -4,7 +4,7 @@ const router = express.Router();
 const ApprovedStudent = require('../../models/Officer/ApprovedStudents');
 
 // Route to fetch installments
-router.post('/fetch-installments', async (req, res) => {
+router.post('/student/fetchinstallments', async (req, res) => {
   const { email, course } = req.body;
 
   try {

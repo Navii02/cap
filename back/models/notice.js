@@ -3,8 +3,10 @@ const mongoose = require('mongoose');
 const noticeSchema = new mongoose.Schema({
   notice: String,
   image: String,
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
 });
 
-const Notice = mongoose.model('Notice', noticeSchema);
-
-module.exports = Notice;
+module.exports = mongoose.model('Notice', noticeSchema);

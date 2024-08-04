@@ -1,5 +1,5 @@
 const { initializeApp } = require('firebase/app');
-const { getStorage, ref, uploadBytes, getDownloadURL } = require('firebase/storage');
+const { getStorage, ref, uploadBytes, getDownloadURL,deleteObject  } = require('firebase/storage');
 
 
 const firebaseConfig = {
@@ -15,4 +15,4 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const storage = getStorage(app);
 
-module.exports = { app,storage, ref, uploadBytes, getDownloadURL };
+module.exports = { app,storage, ref, uploadBytes, getDownloadURL,deleteObject  };

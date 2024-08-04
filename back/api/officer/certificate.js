@@ -3,6 +3,7 @@ const router = express.Router();
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+const cron = require('node-cron');
 const CertificateRequest = require('../../models/CertificateRequest');
 const StudentData = require('../../models/Officer/ApprovedStudents');
 
@@ -68,4 +69,25 @@ router.post('/officer/declineRequest/:id', async (req, res) => {
   }
 });
 
+cron.schedule('0 0 * * *', async () => {
+  try {
+    const twoMonthsAgo = new Date();
+    twoMonthsAgo.setMonth(twoMonthsAgo.getMonth() - 2);
+
+    const oldCertificates = await CertificateRequest.find({
+      status: 'Approved',
+      approvedAt: { $lt: twoMonthsAgo },
+    });
+
+    for (const certificate of oldCertificates) {
+      const fileRef = ref(storage, certificate.fileUrl);
+      await deleteObject(fileRef);
+      await CertificateRequest.findByIdAndDelete(certificate._id);
+    }
+
+    console.log('Old certificates deleted successfully.');
+  } catch (error) {
+    console.error('Error deleting old certificates:', error);
+  }
+});
 module.exports = router;

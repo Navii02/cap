@@ -25,7 +25,7 @@ function InstallmentPage() {
       setCourse(storedCourse);
     
       try {
-        const response = await axios.post(`/api/student/fetch-installments`, {
+        const response = await axios.post(`/api/student/fetchinstallments`, {
           email,
           course: storedCourse,
         });

@@ -18,6 +18,13 @@ const certificateRequestSchema = new mongoose.Schema({
   declineReason: String,
   acceptedBy: String,
   hodDeclineReason: { type: String },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+  approvedAt: {
+    type: Date,
+  },
 }, { timestamps: true });
 
 const CertificateRequest = mongoose.model('CertificateRequest', certificateRequestSchema);
