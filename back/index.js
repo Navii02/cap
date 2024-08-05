@@ -35,7 +35,7 @@ const aprrovedLists = require('./api/officer/approvedandremovedlist')
 const FeePayment = require('./api/officer/FeePayment')
 const Officerhome = require('./api/officer/officerhome')
 const AdmissionFeeDetails = require('./api/officer/FeeDetails')
-
+const CSVUpload = require('./api/officer/csvUploadRoute')
 
 const FaculityRoutes = require('./api/faculity/faculityRoutes')
 const FacultyProfile=require('./api/faculity/faculityhome')
@@ -151,6 +151,7 @@ app.use('/api',HodPerformance)
 app.use('/api',AdmissionFeeDetails)
 app.use('/api',Adminstudents)
 app.use('/api',AdminTeacher)
+app.use('/api', CSVUpload)
 
  app.use('/api',TutorHome)
  app.use('/api',DataTable)

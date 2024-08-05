@@ -100,33 +100,33 @@ const DataEntryForm = ({ fetchStudents, onDataEntered }) => {
       const mediaStream = await navigator.mediaDevices.getUserMedia({
         video: true,
       });
-
+  
       videoRef.current.srcObject = mediaStream;
       videoRef.current.play(); // Start playing the video
-
+  
       // Display both video and canvas elements
       videoRef.current.style.display = "block";
       canvasRef.current.style.display = "block";
-
+  
       // Introduce a delay before capturing the photo (adjust as needed)
       await new Promise((resolve) => setTimeout(resolve, 5000));
-
+  
       const canvas = canvasRef.current;
       const context = canvas.getContext("2d");
-
+  
       // Ensure video dimensions match canvas dimensions
       const { videoWidth, videoHeight } = videoRef.current;
       canvas.width = videoWidth;
       canvas.height = videoHeight;
-
+  
       // Draw the video frame onto the canvas
       context.translate(videoWidth, 0); // Flip horizontally
       context.scale(-1, 1); // Mirror image horizontally
       context.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
-
+  
       // Reset transformation to prevent further mirroring
       context.setTransform(1, 0, 0, 1, 0, 0);
-
+  
       // Show a confirmation dialog to capture the photo
       const captureConfirmed = window.confirm(
         "Do you want to capture this photo?"
@@ -135,9 +135,16 @@ const DataEntryForm = ({ fetchStudents, onDataEntered }) => {
         // Capture the photo from the canvas
         const photoData = canvas.toDataURL("image/jpeg");
         const blob = await fetch(photoData).then((res) => res.blob());
-        const file = new File([blob], "photo.jpg", { type: "image/jpeg" });
-        setFormData({ ...formData, photo: file });
-
+  
+        // Check file size before setting state
+        if (blob.size > 500 * 1024) { // 250 KB in bytes
+          setErrorMessage("The captured photo size exceeds 500 KB.");
+        } else {
+          const file = new File([blob], "photo.jpg", { type: "image/jpeg" });
+          setFormData({ ...formData, photo: file });
+          setErrorMessage(""); // Clear any previous error messages
+        }
+  
         // Hide the video and canvas elements after capturing the photo
         videoRef.current.srcObject.getTracks().forEach((track) => track.stop());
         videoRef.current.style.display = "none";
@@ -152,7 +159,7 @@ const DataEntryForm = ({ fetchStudents, onDataEntered }) => {
       console.error("Error accessing camera:", error);
     }
   };
-
+  
   const handleCopyAddress = () => {
     setCopyAddressOption(!copyAddressOption);
     if (!copyAddressOption) {
@@ -165,10 +172,17 @@ const DataEntryForm = ({ fetchStudents, onDataEntered }) => {
 
   const handleFileInputChange = (event) => {
     const { name, files } = event.target;
-    if (name === "photo") {
-      setFormData({ ...formData, [name]: files[0] });
+    if (files.length > 0) {
+      const file = files[0];
+      if (file.size > 250 * 1024) { // 250 KB in bytes
+        setErrorMessage("The file size exceeds 250 KB.");
+      } else {
+        setFormData({ ...formData, [name]: file });
+        setErrorMessage(""); // Clear any previous error messages
+      }
     }
   };
+  
 
   const handleChange = (event) => {
     const { name, value, files, checked, type } = event.target;
@@ -360,6 +374,7 @@ const DataEntryForm = ({ fetchStudents, onDataEntered }) => {
           </div>
           <div className="form-group">
             <label className="required">Photo:</label>
+            (size less than 250 KB)
             <div className="button-container">
               <input
                 ref={fileInputRef}

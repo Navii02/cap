@@ -92,6 +92,7 @@ router.post('/hod/assign', async (req, res) => {
 });
 
 // Route to de-assign an HOD
+// Route to de-assign an HOD
 router.post('/hod/deassign', async (req, res) => {
   try {
     const { hodId } = req.body;
@@ -113,8 +114,11 @@ router.post('/hod/deassign', async (req, res) => {
       await teacher.save();
     }
 
+    // Delete the HOD details from HodDetails schema
+    await HodDetails.findByIdAndDelete(hodId);
+
     res.status(200).json({
-      message: 'HOD de-assigned successfully',
+      message: 'HOD de-assigned and details removed successfully',
     });
   } catch (error) {
     console.error('Error de-assigning HOD:', error);

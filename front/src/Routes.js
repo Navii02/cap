@@ -29,6 +29,7 @@ import ApprovedAndRemoved from './components/officer/ApprovedAndRemoved';
 import FeePayment from './components/officer/FeePayment';
 import StudentListPage from './components/officer/StudentList';
 import AdmissionFeeDetails  from './components/officer/FeeDetails';
+import CSVUpload from './components/officer/CSVUpload';
 
 import AdminDashboard from './components/admin/AdminDashboard';
 import AForgotPassword from './components/admin/AdminForgot';
@@ -170,6 +171,7 @@ function RoutesComp() {
         {/* Officer Routes */}
         <Route path='/officersignup' element={<OfficerSignup />} />
         <Route path='/officerlogin' element={<Officerlogin />} />
+        <Route path='/otherstudents' element={<CSVUpload/>} />
         <Route
           path='/office'
           element={

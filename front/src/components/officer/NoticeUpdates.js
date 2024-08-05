@@ -4,7 +4,6 @@ import '../../App.css';
 import './NoticeUpdates.css';
 import Navbar from './OfficerNavbar';
 
-
 function NoticeUpdates() {
   const [notice, setNotice] = useState('');
   const [image, setImage] = useState(null);
@@ -30,6 +29,11 @@ function NoticeUpdates() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (image && image.size > 250 * 1024) { // 250 KB in bytes
+      setErrorMessage("The image size exceeds 250 KB.");
+      return; // Prevent form submission
+    }
+
     setLoading(true); // Start loading animation
 
     try {
@@ -51,20 +55,26 @@ function NoticeUpdates() {
 
       setTimeout(() => {
         setSuccessMessage('');
-      }, 1000); // Hide success message after 3 seconds
+      }, 1000); // Hide success message after 1 second
     } catch (error) {
       setErrorMessage(error.response?.data?.message || 'An error occurred');
 
       setTimeout(() => {
         setErrorMessage('');
-      }, 1000); // Hide error message after 3 seconds
+      }, 1000); // Hide error message after 1 second
     } finally {
       setLoading(false); // Stop loading animation
     }
   };
 
   const handleImageChange = (e) => {
-    setImage(e.target.files[0]);
+    const file = e.target.files[0];
+    if (file && file.size > 250 * 1024) { // 250 KB in bytes
+      setErrorMessage("The image size exceeds 250 KB.");
+    } else {
+      setImage(file);
+      setErrorMessage(""); // Clear any previous error messages
+    }
   };
 
   const handleShowMore = () => {
@@ -102,6 +112,7 @@ function NoticeUpdates() {
           </label>
           <label>
             <br />Image:
+            (size less than 250 KB)
             <input
               type="file"
               name="image"
@@ -109,8 +120,8 @@ function NoticeUpdates() {
             ></input>
           </label>
           <button 
-          className='savebutton'
-          type="submit">Add Notice</button>
+            className='savebutton'
+            type="submit">Add Notice</button>
         </form>
         {loading && (
           <div className="full-page-loader">

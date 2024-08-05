@@ -86,7 +86,6 @@ cron.schedule('0 0 * * *', async () => {
       await Notice.findByIdAndDelete(notice._id);
     }
 
-    console.log('Old notices and their images deleted successfully.');
   } catch (error) {
     console.error('Error deleting old notices and their images:', error);
   }

@@ -358,6 +358,7 @@ const DataEntryForm = ({ fetchStudents, onDataEntered }) => {
           </div>
           <div className="form-group">
             <label className="required">Photo:</label>
+            (size less than 250 KB)
             <div className="button-container">
               <input
                 ref={fileInputRef}
