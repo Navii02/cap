@@ -198,18 +198,6 @@ router.post('/decline/:id', async (req, res) => {
 });
 
 // Fetch image URL
-router.get('/image/:path', async (req, res) => {
-  const imagePath = req.params.path;
-  const imageRef = ref(storage, imagePath);
-
-  try {
-    const url = await getDownloadURL(imageRef);
-    res.redirect(url); // Redirect to the image URL
-  } catch (error) {
-    console.error('Error fetching image URL:', error);
-    res.status(500).send('Error fetching image');
-  }
-});
 
 // Approve student and move to ApprovedStudents collection
 

@@ -2,27 +2,34 @@ const express = require("express");
 const multer = require("multer");
 const path = require("path");
 const mongoose = require("mongoose");
-const { storage, ref, uploadBytes, getDownloadURL } = require("../../firebase"); // Import Firebase Storage methods
 
 const Student = require("../../models/Officer/StudentAdmission");
 const ApprovedStudent = require("../../models/Officer/ApprovedStudents");
 
 const router = express.Router();
 
-const upload = multer({ storage: multer.memoryStorage() });
-router.post("/studentadmission", upload.single("photo"), async (req, res) => {
+// Multer storage configuration for handling file uploads
+const sanitizeFilename = (name) => {
+  return name.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+};
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'studentsphoto/');
+  },
+  filename: function (req, file, cb) {
+    const fileId = new mongoose.Types.ObjectId();
+    const studentName = sanitizeFilename(req.body.name || 'unknown'); // Fallback to 'unknown' if name is not provided
+    const filename = `${studentName}_${fileId}${path.extname(file.originalname)}`;
+    cb(null, filename);
+  },
+});
+
+const upload = multer({ storage: storage });
+router.post('/studentAdmission', upload.single('photo'), async (req, res) => {
   try {
-    let photoUrl = "";
-    if (req.file) {
-      const storageRef = ref(
-        storage,
-        `student_photos/${Date.now()}_${req.body.name.replace(/\s+/g, "_")}_${
-          req.file.originalname
-        }`
-      );
-      const snapshot = await uploadBytes(storageRef, req.file.buffer);
-      photoUrl = await getDownloadURL(snapshot.ref);
-    }
+    
+    photo = req.file ? req.file.path : null;
 
 
     // Check if student is already registered by email and course in both collections
@@ -57,7 +64,7 @@ router.post("/studentadmission", upload.single("photo"), async (req, res) => {
     const newStudent = new Student({
       ...req.body,
       admissionId: newAdmissionId,
-      photo: photoUrl,
+      photo: photo,
       submissionDate: new Date(),
       qualify: {
         exam: req.body["qualify.exam"],

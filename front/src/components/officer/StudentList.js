@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import OfficerNavbar from "./OfficerNavbar";
+import * as XLSX from 'xlsx';
 
 import "./DataEditing.css";
 import "./StudentList.css";
@@ -122,6 +123,33 @@ const StudentListOfficer = () => {
     const day = String(date.getDate()).padStart(2, "0");
     return `${year}-${month}-${day}`;
   };
+  const generateExcel = () => {
+    // Filter students by the selected course
+    const filteredStudents = approvedStudents.filter(student => 
+      selectedCourse === '' || student.course === selectedCourse
+    );
+
+    // Map filtered students to the required format
+    const studentData = filteredStudents.map(student => ({
+      Name: student.name,
+      'Date of Birth': student.dateOfBirth,
+      'Father\'s Name': student.parentDetails.fatherName,
+      'fatherMobileNo':student.parentDetails.fatherMobileNo,
+     
+      'Mother\'s Name': student.parentDetails.motherName,
+      'motherMobileNo':student.parentDetails.motherMobileNo,
+      'Mobile Number': student.mobileNo,
+      'Whatsapp No': student.whatsappNo,
+
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(studentData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Students');
+
+    // Write the workbook to a file
+    XLSX.writeFile(workbook, 'ApprovedStudents.xlsx');
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -213,9 +241,9 @@ const StudentListOfficer = () => {
   };
 
  
-  const handlePrintPreview = async (_id, photoPath) => {
+  const handlePrintPreview = async (_id, photoUrl) => {
     try {
-      const photoUrl = `/api/image/${encodeURIComponent(photoPath)}`;
+     
       const response = await axios.get(
         `/api/approvedstudentDetails/${_id}`
       );
@@ -569,7 +597,7 @@ const StudentListOfficer = () => {
       </tr>
       <tr>
         <td>Data Sheet</td>
-        <td>${studentDetails.certificates.DataSheet ? "Yes" : "No"}</td>
+        <td>${studentDetails.certificates.Datasheet ? "Yes" : "No"}</td>
         <td>Physical Fitness</td>
         <td>${studentDetails.certificates.physicalfitness ? "Yes" : "No"}</td>
       </tr>
@@ -584,7 +612,7 @@ const StudentListOfficer = () => {
    <td>Community Certificate</td>
     <td> ${studentDetails.certificates.communitycertificate ? "Yes" : "No"}</td>
    <td>caste Certificate</td>
-    <td>${studentDetails.certificates.castecertificates ? "Yes" : "No"}</td>
+    <td>${studentDetails.certificates.castecertificate ? "Yes" : "No"}</td>
    </tr>
    <tr> 
     <td> Copy Of Aadhaar Card</td>
@@ -792,6 +820,7 @@ const StudentListOfficer = () => {
                     {/* Add more courses as needed */}
                   </select>
                 </div>
+                <button onClick={generateExcel}>Export to Excel</button>
                 <table>
                   <thead>
                     <tr>

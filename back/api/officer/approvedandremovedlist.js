@@ -78,7 +78,8 @@ router.get('/approvedstudentDetails/:id', async (req, res) => {
     const { qualify } = student;
     const { marks } = student;
     const { certificates } = student;
-    const photoUrl = photo ? `${req.protocol}://${req.get('host')}/ApprovedRemoved/image/${encodeURIComponent(photo)}` : null;
+    const photoUrl = photo ? `${req.protocol}://${req.get('host')}/${photo}` : null;
+
     res.json({
       studentDetails: {
         name,
@@ -213,19 +214,7 @@ router.post('/upload/:studentId', upload.single('file'), async (req, res) => {
 });
 
 // Route to serve images from Firebase
-router.get('/ApprovedRemoved/image/:path', async (req, res) => {
-  const imagePath = req.params.path;
-  //console.log('Image path:', imagePath);
-  const imageRef = ref(storage, `images/${imagePath}`);
 
-  try {
-    const url = await getDownloadURL(imageRef);
-    res.redirect(url);
-  } catch (error) {
-    console.error('Error fetching image URL:', error);
-    res.status(500).send('Error fetching image');
-  }
-});
 router.delete('/deleteStudent/:id', async (req, res) => {
   const studentId = req.params.id;
 
@@ -247,6 +236,21 @@ router.delete('/deleteStudent/:id', async (req, res) => {
   } catch (error) {
     console.error('Error declining student:', error);
     res.status(500).json({ error: 'Internal Server Error', details: error.message });
+  }
+});
+router.delete('/removedstudents/:id', async (req, res) => {
+  try {
+    const studentId = req.params.id;
+    const deletedStudent = await RemovedStudent.findByIdAndDelete(studentId);
+
+    if (!deletedStudent) {
+      return res.status(404).json({ message: 'Student not found' });
+    }
+
+    res.status(200).json({ message: 'Student deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting student:', error);
+    res.status(500).json({ message: 'Server error' });
   }
 });
 

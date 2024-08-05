@@ -161,7 +161,7 @@ app.use('/api', CSVUpload)
  
  app.use('/uploads', express.static(path.join(__dirname, '../../uploads')));
 app.use('/certificate', express.static(path.join(__dirname, '../../certificate')));
-app.use('/studentsphoto', express.static(path.join(__dirname, '../../StudentsPhoto')));
+app.use('/studentsphoto', express.static(path.join(__dirname, './studentsphoto')));
 
 // Serve the images
 app.use('/images', express.static(path.join(__dirname, 'uploads'), {

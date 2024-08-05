@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./StudentList.css";
 import OfficerNavbar from "./OfficerNavbar";
-
+import * as XLSX from 'xlsx';
 import "./DataEditing.css";
 
 const ApprovedAndRemoved = () => {
@@ -181,6 +181,7 @@ const ApprovedAndRemoved = () => {
       });
     }
   };
+
   const handleDelete = async (studentId) => {
     const confirm = window.confirm(
       "Are you sure you want to delete this student?"
@@ -191,6 +192,42 @@ const ApprovedAndRemoved = () => {
       await axios.delete(`/api/deleteStudent/${studentId}`);
       setApprovedStudents((prevStudents) =>
         prevStudents.filter((student) => student._id !== studentId)
+      );
+      alert("Student deleted successfully.");
+    } catch (error) {
+      console.error("Error declining student:", error);
+    }
+  };
+  const generateExcel = () => {
+    const studentData = approvedStudents.map(student => ({
+      Name: student.name,
+      'Date of Birth': student.dateOfBirth,
+      'Father\'s Name': student.parentDetails.fatherName,
+      'fatherMobileNo':student.parentDetails.fatherMobileNo,
+     
+      'Mother\'s Name': student.parentDetails.motherName,
+      'motherMobileNo':student.parentDetails.motherMobileNo,
+      'Mobile Number': student.mobileNo,
+      'Whatsapp No': student.whatsappNo,
+
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(studentData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Students');
+
+    XLSX.writeFile(workbook, 'NewAdmissionStudents.xlsx');
+  };
+  const handleremovedDelete = async (studentId) => {
+    const confirm = window.confirm(
+      "Are you sure you want to delete this student?"
+    );
+    if (!confirm) return;
+
+    try {
+      await axios.delete(`/api/removedstudents/${studentId}`);
+      setRemovedStudents((prevStudents) =>
+        prevStudents.filter((student) => student._id !== studentId||studentId)
       );
       alert("Student deleted successfully.");
     } catch (error) {
@@ -217,12 +254,13 @@ const ApprovedAndRemoved = () => {
     }
   };
 
-  const handlePrintPreview = async (_id, photoPath) => {
+  const handlePrintPreview = async (_id, photoUrl) => {
     try {
-      const photoUrl = `/api/image/${encodeURIComponent(photoPath)}`;
+     
       const response = await axios.get(
         `/api/approvedstudentDetails/${_id}`
       );
+      console.log(photoUrl);
       
       const studentDetails = response.data.studentDetails;
       const feeDetails = response.data.studentDetails.feeDetails;
@@ -426,7 +464,7 @@ const ApprovedAndRemoved = () => {
   <!-- Header Section -->
   <div class="header">
     <img src="/images/college__2_-removebg-preview.png" alt="College Logo" class="logo" width="100" height="125">
-    <img src="${photoUrl}" alt="Student Photo" class="photo" width="91" height="129.5">
+    <img src="${studentDetails.photoUrl}" alt="Student Photo" class="photo" width="91" height="129.5">
     <div class="header-content">
       <p>COLLEGE OF ENGINEERING POONJAR</p>
       <p>Managed by IHRD, Govt. of Kerala</p>
@@ -967,32 +1005,37 @@ const ApprovedAndRemoved = () => {
             </button>
 
             {showRemoved ? (
-              <div>
-                <h2>Removed Students</h2>
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Name</th>
-                      <th>Admission ID</th>
-                      <th>submission Date</th>
-                      <th>Course</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {removedStudents.map((student) => (
-                      <tr key={student._id}>
-                        <td>{student.name}</td>
-                        <td>{student.admissionId}</td>
-                        <td>{student.submissionDate}</td>
-                        <td>{student.course}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+               <div>
+               <h2>Removed Students</h2>
+               <table>
+                 <thead>
+                   <tr>
+                     <th>Name</th>
+                     <th>Admission ID</th>
+                     <th>Submission Date</th>
+                     <th>Course</th>
+                     <th>Actions</th>
+                   </tr>
+                 </thead>
+                 <tbody>
+                   {removedStudents.map((student) => (
+                     <tr key={student._id}>
+                       <td>{student.name}</td>
+                       <td>{student.admissionId}</td>
+                       <td>{student.submissionDate}</td>
+                       <td>{student.course}</td>
+                       <td>
+                         <button onClick={() => handleremovedDelete(student._id)}>Delete</button>
+                       </td>
+                     </tr>
+                   ))}
+                 </tbody>
+               </table>
+             </div>
             ) : (
               <div>
                 <h2>Approved Students</h2>
+                <button onClick={generateExcel}>Export to Excel</button>
                 <table>
                   <thead>
                     <tr>

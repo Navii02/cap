@@ -321,9 +321,9 @@ const StudentList = () => {
   };
   
 
-  const handlePrintPreview = async (_id, photoPath) => {
+  const handlePrintPreview = async (_id, photourl) => {
     try {
-      const photoUrl = `/api/image/${encodeURIComponent(photoPath)}`;
+    
       const response = await axios.get(`/api/studentDetails/${_id}`);
     
       const studentDetails = response.data.studentDetails;
@@ -527,7 +527,7 @@ const StudentList = () => {
   <!-- Header Section -->
   <div class="header">
     <img src="/images/college__2_-removebg-preview.png" alt="College Logo" class="logo" width="100" height="125">
-    <img src="${photoUrl}" alt="Student Photo" class="photo" width="91" height="129.5">
+    <img src="${studentDetails.photoUrl}" alt="Student Photo" class="photo" width="91" height="129.5">
     <div class="header-content">
       <p>COLLEGE OF ENGINEERING POONJAR</p>
       <p>Managed by IHRD, Govt. of Kerala</p>

@@ -98,11 +98,8 @@ router.get("/officerstudent/approvedstudentDetails/:id", async (req, res) => {
     const { achievements } = student;
     const { qualify } = student;
     const { marks } = student;
-    const photoUrl = photo
-      ? `${req.protocol}://${req.get(
-          "host"
-        )}/ApprovedRemoved/image/${encodeURIComponent(photo)}`
-      : null;
+   const photoUrl = photo ? `${req.protocol}://${req.get('host')}/${photo}` : null;
+
     res.json({
       studentDetails: {
         name,
