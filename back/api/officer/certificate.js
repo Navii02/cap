@@ -3,17 +3,29 @@ const router = express.Router();
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
-const cron = require('node-cron');
 const CertificateRequest = require('../../models/CertificateRequest');
 const StudentData = require('../../models/Officer/ApprovedStudents');
 
-const { storage, ref, uploadBytes, getDownloadURL } = require('../../firebase'); // Adjust path accordingly
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const uploadPath = 'certificate/';
+    if (!fs.existsSync(uploadPath)) {
+      fs.mkdirSync(uploadPath);
+    }
+    cb(null, uploadPath);
+  },
+  filename: (req, file, cb) => {
+    const requestId = req.params.id;
+    const fileName = `${requestId}.pdf`;
+    cb(null, fileName);
+  },
+});
 
-const upload = multer({ storage: multer.memoryStorage() }); // Use memory storage for multer
+const upload = multer({ storage });
 
 router.get('/officer/certificateRequests', async (req, res) => {
   try {
-    const requests = await CertificateRequest.find({ HoDstatus: 'Accepted' }).sort({ createdAt: -1 });
+    const requests = await CertificateRequest.find({HoDstatus:'Accepted'}).sort({ createdAt: -1 });
 
     const requestsWithStudentData = await Promise.all(
       requests.map(async (request) => {
@@ -35,16 +47,7 @@ router.get('/officer/certificateRequests', async (req, res) => {
 router.post('/officer/approveRequest/:id', upload.single('file'), async (req, res) => {
   try {
     const requestId = req.params.id;
-    const file = req.file;
-
-    if (!file) {
-      return res.status(400).json({ message: 'No file uploaded' });
-    }
-
-    const fileName = `${requestId}.pdf`;
-    const fileRef = ref(storage, `certificates/${fileName}`);
-    await uploadBytes(fileRef, file.buffer);
-    const fileUrl = await getDownloadURL(fileRef);
+    const fileUrl = req.file ? `/certificate/${req.file.filename}` : null;
 
     await CertificateRequest.findByIdAndUpdate(requestId, { status: 'Approved', fileUrl });
 
@@ -69,25 +72,4 @@ router.post('/officer/declineRequest/:id', async (req, res) => {
   }
 });
 
-cron.schedule('0 0 * * *', async () => {
-  try {
-    const twoMonthsAgo = new Date();
-    twoMonthsAgo.setMonth(twoMonthsAgo.getMonth() - 2);
-
-    const oldCertificates = await CertificateRequest.find({
-      status: 'Approved',
-      approvedAt: { $lt: twoMonthsAgo },
-    });
-
-    for (const certificate of oldCertificates) {
-      const fileRef = ref(storage, certificate.fileUrl);
-      await deleteObject(fileRef);
-      await CertificateRequest.findByIdAndDelete(certificate._id);
-    }
-
-    console.log('Old certificates deleted successfully.');
-  } catch (error) {
-    console.error('Error deleting old certificates:', error);
-  }
-});
 module.exports = router;

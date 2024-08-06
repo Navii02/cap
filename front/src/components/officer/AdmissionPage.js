@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import axios from "axios";
-import Navbar from "./OfficerNavbar";
+
 import "./DataEditing.css";
 import Modal from "react-modal";
 
@@ -282,7 +282,7 @@ const DataEntryForm = ({ fetchStudents, onDataEntered }) => {
   return (
     <div>
     <div>
-      <Navbar />
+  
       <div className="data-entry-container">
         <div className="page-title">Admission Form</div>
         <hr class="divider"></hr>

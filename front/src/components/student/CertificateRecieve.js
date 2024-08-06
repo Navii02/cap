@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import "./CertificateRecieve.css";
-import UserNavbar from './UserNavbar';
-
-import Loading from './Loading'; // Import the Loading component
+import './CertificateRecieve.css'
+import Navbar from './UserNavbar'
 
 const CertificateRequestsPage = () => {
   const [requests, setRequests] = useState([]);
-  const [loading, setLoading] = useState(true); // Add loading state
   const [errorMessage, setErrorMessage] = useState('');
   const [userEmail, setUserEmail] = useState('');
 
@@ -21,8 +18,6 @@ const CertificateRequestsPage = () => {
         setRequests(response.data.requests);
       } catch (error) {
         setErrorMessage(error.response?.data?.message || 'Error fetching requests');
-      } finally {
-        setLoading(false); // Set loading to false after fetching data
       }
     };
 
@@ -31,14 +26,14 @@ const CertificateRequestsPage = () => {
     }
   }, [userEmail]);
 
-  const handleDownload = async (fileName) => {
+  const handleDownload = async (fileUrl) => {
     try {
-      const response = await axios.get(`/api/download/${fileName}`, { responseType: 'blob' });
+      const response = await axios.get(fileUrl, { responseType: 'blob' });
       const blob = new Blob([response.data], { type: response.headers['content-type'] });
 
       const link = document.createElement('a');
       link.href = window.URL.createObjectURL(blob);
-      link.setAttribute('download', fileName);
+      link.setAttribute('download', `certificate_${requests._id}.pdf`);
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -47,13 +42,9 @@ const CertificateRequestsPage = () => {
     }
   };
 
-  if (loading) {
-    return <Loading />; // Show loading component while data is being fetched
-  }
-
   return (
     <>
-      <UserNavbar />
+      <Navbar />
       <div className="certificate-requests-page">
         {requests.length === 0 ? (
           <p>No certificate requests found for the logged-in user.</p>
@@ -69,7 +60,7 @@ const CertificateRequestsPage = () => {
                 <p>Selected Documents: {request.selectedDocuments.join(', ')}</p>
                 {request.HoDstatus === 'Declined' && <p>HoD Decline Reason: {request.hodDeclineReason}</p>}
                 {request.status === 'Approved' && (
-                  <button onClick={() => handleDownload(`${request._id}.pdf`)}>Download</button>
+                  <button onClick={() => handleDownload(request.fileUrl)}>Download</button>
                 )}
                 {request.status === 'Declined' && <p>Decline Reason: {request.declineReason}</p>}
               </li>

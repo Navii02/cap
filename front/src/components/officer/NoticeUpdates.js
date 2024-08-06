@@ -11,7 +11,6 @@ function NoticeUpdates() {
   const [errorMessage, setErrorMessage] = useState('');
   const [notices, setNotices] = useState([]);
   const [visibleNotices, setVisibleNotices] = useState(3); // Number of notices to initially display
-  const [loading, setLoading] = useState(false); // State for loading animation
 
   useEffect(() => {
     fetchNotices();
@@ -19,29 +18,22 @@ function NoticeUpdates() {
 
   const fetchNotices = async () => {
     try {
-      const response = await axios.get(`/api/notices`);
+      const response = await axios.get('/api/notices');
       setNotices(response.data.notices.reverse());
     } catch (error) {
-      console.error(error);
+      console.log(error);
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (image && image.size > 250 * 1024) { // 250 KB in bytes
-      setErrorMessage("The image size exceeds 250 KB.");
-      return; // Prevent form submission
-    }
-
-    setLoading(true); // Start loading animation
-
     try {
       const formData = new FormData();
       formData.append('notice', notice);
       formData.append('image', image);
 
-      const response = await axios.post(`/api/photos`, formData, {
+      const response = await axios.post('/api/photos', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -55,26 +47,39 @@ function NoticeUpdates() {
 
       setTimeout(() => {
         setSuccessMessage('');
-      }, 1000); // Hide success message after 1 second
+      }, 3000); // Hide success message after 3 seconds
     } catch (error) {
-      setErrorMessage(error.response?.data?.message || 'An error occurred');
+      setErrorMessage(error.response.data.message);
 
       setTimeout(() => {
         setErrorMessage('');
-      }, 1000); // Hide error message after 1 second
-    } finally {
-      setLoading(false); // Stop loading animation
+      }, 3000); // Hide error message after 3 seconds
+    }
+  };
+  const handleDelete = async (id) => {
+    if (window.confirm('Are you sure you want to delete this notice?')) {
+      try {
+        const response = await axios.delete(`/api/notices/${id}`);
+        setSuccessMessage(response.data.message);
+       
+        fetchNotices();
+
+        setTimeout(() => {
+          setSuccessMessage('');
+        }, 3000); // Hide success message after 3 seconds
+      } catch (error) {
+        setErrorMessage(error.response.data.message);
+
+        setTimeout(() => {
+          setErrorMessage('');
+        }, 3000); // Hide error message after 3 seconds
+      }
     }
   };
 
+
   const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file && file.size > 250 * 1024) { // 250 KB in bytes
-      setErrorMessage("The image size exceeds 250 KB.");
-    } else {
-      setImage(file);
-      setErrorMessage(""); // Clear any previous error messages
-    }
+    setImage(e.target.files[0]);
   };
 
   const handleShowMore = () => {
@@ -83,18 +88,6 @@ function NoticeUpdates() {
 
   const handleShowLess = () => {
     setVisibleNotices(3); // Show only the initial 3 notices
-  };
-
-  const handleDelete = async (id) => {
-    if (window.confirm('Are you sure you want to delete this notice?')) {
-      try {
-        await axios.delete(`/api/notices/${id}`);
-        setSuccessMessage('Notice deleted successfully');
-        fetchNotices(); // Refresh notices list
-      } catch (error) {
-        setErrorMessage(error.response?.data?.message || 'An error occurred');
-      }
-    }
   };
 
   return (
@@ -111,30 +104,22 @@ function NoticeUpdates() {
             ></textarea>
           </label>
           <label>
-            <br />Image:
-            (size less than 250 KB)
+            <br/>Image:
             <input
               type="file"
               name="image"
               onChange={handleImageChange}
             ></input>
           </label>
-          <button 
-            className='savebutton'
-            type="submit">Add Notice</button>
+          <button type="submit">Add Notice</button>
         </form>
-        {loading && (
-          <div className="full-page-loader">
-            <div className="pulsing-dot"></div>
-          </div>
-        )}
         {successMessage && <p className="success-message">{successMessage}</p>}
         {errorMessage && <p className="error-message">{errorMessage}</p>}
 
         <div className="notice-list">
           {notices.slice(0, visibleNotices).map((notice) => (
             <div key={notice._id} className="notice-item">
-              <img src={notice.image} alt="Notice" style={{ maxWidth: '100%' }} />
+              <img src={`/uploads/${notice.image}`} alt="Notice" />
               <h3>{notice.notice}</h3>
               <button onClick={() => handleDelete(notice._id)} className="delete-button">Delete</button>
             </div>

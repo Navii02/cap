@@ -260,7 +260,7 @@ const ApprovedAndRemoved = () => {
       const response = await axios.get(
         `/api/approvedstudentDetails/${_id}`
       );
-      console.log(photoUrl);
+   
       
       const studentDetails = response.data.studentDetails;
       const feeDetails = response.data.studentDetails.feeDetails;

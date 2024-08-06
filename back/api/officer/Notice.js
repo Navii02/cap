@@ -1,37 +1,38 @@
 const express = require('express');
 const multer = require('multer');
-const { storage, ref, deleteObject, uploadBytes, getDownloadURL } = require('../../firebase');
-const Notice = require('../../models/notice');
-const { v4: uuidv4 } = require('uuid'); // To generate unique file names
-const cron = require('node-cron');
-const mongoose = require('mongoose');
-
+const path = require('path');
 const app = express();
+const cron = require('node-cron');
+const fs = require('fs');
+const Notice = require('../../models/Notice');
 
 // Configure multer for file uploads
-const upload = multer({ storage: multer.memoryStorage() }); // Store files in memory
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'uploads/');
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.originalname);
+  },
+});
+
+const upload = multer({ storage });
+
+
 
 // Function to handle notice upload
 const handleNoticeUpload = async (req, res) => {
   try {
     const { notice } = req.body;
-    const file = req.file;
-    const uniqueFilename = `${uuidv4()}_${file.originalname}`;
-
-    // Upload file to Firebase Storage
-    const fileRef = ref(storage, `notices/${uniqueFilename}`);
-    await uploadBytes(fileRef, file.buffer);
-
-    // Get the download URL
-    const downloadURL = await getDownloadURL(fileRef);
+    const { filename } = req.file;
 
     const newNotice = new Notice({
       notice,
-      image: downloadURL,
-      createdAt: new Date(), // Ensure createdAt field is set
+      image: filename,
     });
 
     await newNotice.save();
+    console.log("Success");
 
     res.json({ message: 'Notice added successfully' });
   } catch (error) {
@@ -39,7 +40,6 @@ const handleNoticeUpload = async (req, res) => {
     res.status(500).json({ message: 'Server Error' });
   }
 };
-
 app.post('/photos', upload.single('image'), handleNoticeUpload);
 
 // Routes
@@ -53,16 +53,18 @@ app.get('/notices', async (req, res) => {
   }
 });
 
-// DELETE /api/notices/:id
 app.delete('/notices/:id', async (req, res) => {
   try {
     const { id } = req.params;
     const notice = await Notice.findByIdAndDelete(id);
 
     if (notice) {
-      // Delete the image from Firebase Storage
-      const fileRef = ref(storage, notice.image);
-      await deleteObject(fileRef);
+      // Delete the image from local storage
+      fs.unlink(path.join(__dirname, '../../uploads', notice.image), (err) => {
+        if (err) {
+          console.error('Failed to delete image:', err);
+        }
+      });
     }
 
     res.json({ message: 'Notice deleted successfully' });
@@ -81,14 +83,17 @@ cron.schedule('0 0 * * *', async () => {
     const oldNotices = await Notice.find({ createdAt: { $lt: oneMonthAgo } });
 
     for (const notice of oldNotices) {
-      const fileRef = ref(storage, notice.image);
-      await deleteObject(fileRef);
+      fs.unlink(path.join(__dirname, '../../uploads', notice.image), (err) => {
+        if (err) {
+          console.error('Failed to delete image:', err);
+        }
+      });
       await Notice.findByIdAndDelete(notice._id);
     }
-
   } catch (error) {
     console.error('Error deleting old notices and their images:', error);
   }
 });
+
 
 module.exports = app;
