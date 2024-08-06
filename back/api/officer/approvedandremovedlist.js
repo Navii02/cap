@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const multer = require('multer');
 const path = require('path');
-const { storage, ref, uploadBytes, getDownloadURL } = require('../../firebase');
+
 const ApprovedStudent = require('../../models/Officer/ApprovedStudents');
 const RemovedStudent = require('../../models/Officer/NotApprovedstudents');
 const Fee = require('../../models/Officer/FeeDetails');
@@ -179,39 +179,6 @@ router.get('/approvedstudentDetails/:id', async (req, res) => {
 });
 
 // Route to handle image upload and update student document
-router.post('/upload/:studentId', upload.single('file'), async (req, res) => {
-  const studentId = req.params.studentId;
-  if (!req.file) {
-    return res.status(400).json({ error: 'No file uploaded' });
-  }
-
-  const file = req.file;
-  const fileExtension = path.extname(file.originalname);
-  const fileName = `${Date.now()}${fileExtension}`;
-  const fileRef = ref(storage, `student_photos/${fileName}`);
-
-  try {
-    // Upload file to Firebase Storage
-    await uploadBytes(fileRef, file.buffer);
-    const fileURL = await getDownloadURL(fileRef);
-
-    // Update student document with new image URL
-    const updatedStudent = await ApprovedStudent.findByIdAndUpdate(
-      studentId,
-      { $set: { photo: fileURL } },
-      { new: true }
-    );
-
-    if (!updatedStudent) {
-      return res.status(404).json({ error: 'Student not found' });
-    }
-
-    res.json({ photoURL: fileURL });
-  } catch (error) {
-    console.error('Error uploading image:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-});
 
 // Route to serve images from Firebase
 

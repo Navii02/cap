@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const multer = require("multer");
 const path = require("path");
-const { storage, ref, uploadBytes, getDownloadURL } = require("../../firebase");
+
 const ApprovedStudent = require("../../models/Officer/ApprovedStudents");
 const Alumni = require("../../models/Officer/Alumni");
 const RemovedStudent = require("../../models/Officer/NotApprovedstudents");
@@ -168,19 +168,7 @@ router.get("/officerstudent/approvedstudentDetails/:id", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
-router.get("/officerstudent/image/:path", async (req, res) => {
-  const imagePath = req.params.path;
-  //console.log(`Image path received: ${imagePath}`); // Log the received path
-  const imageRef = ref(storage, imagePath);
 
-  try {
-    const url = await getDownloadURL(imageRef);
-    res.redirect(url); // Redirect to the image URL
-  } catch (error) {
-    console.error("Error fetching image URL:", error);
-    res.status(500).send("Error fetching image");
-  }
-});
 
 router.get("/officerstudent/alumni", async (req, res) => {
   try {
