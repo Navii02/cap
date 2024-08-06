@@ -77,6 +77,11 @@ const StudentPerformancePage = () => {
               <option value="1">Semester 1</option>
               <option value="2">Semester 2</option>
               <option value="3">Semester 3</option>
+              <option value="4">Semester 4</option>
+              <option value="5">Semester 5</option>
+              <option value="6">Semester 6</option>
+              <option value="7">Semester 7</option>
+              <option value="8">Semester 8</option>
               {/* Add options for other semesters */}
             </select>
           </div>
@@ -106,8 +111,8 @@ const StudentPerformancePage = () => {
                       <td>{student.course}</td>
                       <td>{student.semester}</td>
                       <td>{student.internalMarks.map(subject => subject.subject).join(', ')}</td>
-                      <td>{student.internalMarks.map(subject => subject.examMarks).join(', ')}</td>
-                      <td>{student.internalMarks.map(subject => subject.attendance).join(', ')}</td>
+                      <td>{student.internalMarks.map(subject => subject.totalMarks).join(', ')}</td>
+                      <td>{student.subjectPercentages.map(subject => subject.percentage).join(', ')}</td>
                     </tr>
                   ))
                 ) : (

@@ -3,7 +3,7 @@ const multer = require('multer');
 const path = require('path');
 const mongoose = require('mongoose');
 const { v4: uuidv4 } = require('uuid');
-const { storage, ref, uploadBytes, getDownloadURL } = require('../../firebase'); // Ensure this path is correct
+//const { storage, ref, uploadBytes, getDownloadURL } = require('../../firebase'); // Ensure this path is correct
 
 const Student = require('../../models/Officer/StudentAdmission');
 const ApprovedStudent = require('../../models/Officer/ApprovedStudents');

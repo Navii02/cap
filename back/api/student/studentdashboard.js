@@ -1,6 +1,6 @@
 const express = require('express');
 const path = require('path');
-const { bucket } = require('../../firebase');
+
 
 const app = express();
 

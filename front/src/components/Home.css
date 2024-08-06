@@ -1,6 +1,5 @@
 /* Global Styles */
 
-
 .office-home-page {
   width: 100%;
   min-height: 100vh; /* Set minimum height to viewport height */
@@ -16,6 +15,7 @@
   position: relative; /* Required for backdrop-filter */
   z-index: 0; /* Ensure the blur is behind other content */
 }
+
 .office-home-page {
   position: relative;
   padding: 20px;
@@ -38,7 +38,6 @@
 .admission-button:hover {
   background-color: #0056b3;
 }
-
 
 /* Hide the scrollbar on the home page */
 html.homepage, body.homepage {
@@ -192,15 +191,17 @@ html.homepage, body.homepage {
   .office-home-page h6 {
     font-size: 30px;
   }
+  
   .admission-button {
     position: absolute; /* Position the button absolutely */
-    bottom: 20px; /* Adjust the distance from the bottom edge */
+    bottom: 800px; /* Adjust the distance from the bottom edge */
     right: 20px; /* Adjust the distance from the right edge */
-    padding: 10px 20px; /* Optional padding for the button */
+    padding: 6px 12px; /* Further reduced padding for smaller screens */
+    font-size: 12px; /* Smaller font size for smaller screens */
     background-color: #1d27e7; /* Optional background color */
     color: white; /* Optional text color */
     border: none; /* Optional border removal */
     border-radius: 5px; /* Optional rounded corners */
     cursor: pointer; /* Indicate clickable button */
   }
-}  
+}

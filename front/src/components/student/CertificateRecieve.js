@@ -52,7 +52,7 @@ const CertificateRequestsPage = () => {
           <ul>
             {requests.map((request) => (
               <li key={request._id}>
-                <p>Request ID: {request._id}</p>
+           
                 <p>Student ID: {request.registerNumber}</p>
                 <p>Reason: {request.reason}</p>
                 <p>HoD Status: {request.HoDstatus}</p>
