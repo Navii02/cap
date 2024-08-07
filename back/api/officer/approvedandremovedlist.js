@@ -8,10 +8,6 @@ const RemovedStudent = require('../../models/Officer/NotApprovedstudents');
 const Fee = require('../../models/Officer/FeeDetails');
 
 // Multer setup for handling file uploads
-const upload = multer({
-  storage: multer.memoryStorage(), // Store file in memory
-  limits: { fileSize: 5 * 1024 * 1024 } // 5 MB file size limit
-});
 
 // Route to fetch approved students
 router.get('/approvedStudents', async (req, res) => {
