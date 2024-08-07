@@ -16,7 +16,7 @@ const AdminOfficersPage = () => {
 
   const fetchOfficers = async () => {
     try {
-      const response = await axios.get(`/api/admin/officers`);
+      const response = await axios.get('/api/admin/officers');
       setOfficers(response.data.officers);
       setLoading(false); // Set loading to false once data is fetched
     } catch (error) {
@@ -31,7 +31,7 @@ const AdminOfficersPage = () => {
 
   const handleAddOfficer = async () => {
     try {
-      await axios.post(`/api/admin/addOfficer`, newOfficer);
+      await axios.post('/api/admin/addOfficer', newOfficer);
       fetchOfficers();
       setNewOfficer({ name: '', post: '', email: '', number: '' });
       setIsAddFormVisible(false); // Hide the form after adding an officer
@@ -66,7 +66,8 @@ const AdminOfficersPage = () => {
   return (
     <div>
       <Navbar />
-      <div className="admin-officers-page">
+      <div className="admin-officers-page-container">
+        <div>
         &nbsp;
         <button onClick={() => setIsAddFormVisible(!isAddFormVisible)}>
           {isAddFormVisible ? 'Cancel' : 'Add Officer'}
@@ -109,9 +110,9 @@ const AdminOfficersPage = () => {
             <button onClick={handleAddOfficer}>Add Officer</button>
           </>
         )}
-      </div>
+        </div>
       &nbsp;
-      <div>
+      <div className='admin-officers-page'>
         &nbsp;
         <h3>Officers List</h3>
         <ul>
@@ -151,7 +152,7 @@ const AdminOfficersPage = () => {
                 </>
               ) : (
                 <>
-                  <div className="admin-officers-page">
+                  <div className="admin-officers-subpage">
                     <p>Name: {officer.name}</p>
                     <p>Post: {officer.post}</p>
                     <p>Email: {officer.email}</p>
@@ -167,6 +168,7 @@ const AdminOfficersPage = () => {
       </div>
 
       {errorMessage && <p>{errorMessage}</p>}
+      </div>
     </div>
   );
 };

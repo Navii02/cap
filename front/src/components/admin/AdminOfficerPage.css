@@ -1,7 +1,124 @@
 .admin-officers-page {
-  
-    margin: 100px 20px 20px 20px;
-  
-    background-color: #ffffff;
-  
+  width: 100%;
+  margin: 0px 0px 0px 0px;
+  padding: 1rem;
+  background: rgb(228, 228, 228);
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.admin-officers-page-container{
+  margin: 80px 0px 0px 0px;
+  padding: 20px;
+}
+
+.admin-officers-subpage{
+  background: #f9f9f9;
+  padding: 10px;
+  border-radius: 8px;
+  width: 400px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.admin-officers-page button {
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 20px;
+  margin: 10px 20px 0px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.admin-officers-page button:hover {
+  background-color: #45a049;
+}
+
+.admin-officers-page h3 {
+  margin-top: 0;
+}
+
+.admin-officers-page label {
+  display: block;
+  margin: 10px 0 5px;
+}
+
+.admin-officers-page input[type="text"] {
+  width: 100%;
+  padding: 8px;
+  margin: 5px 0 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.admin-officers-page .officers-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.admin-officers-page .officers-list li {
+  background: #f9f9f9;
+  margin: 10px 0;
+  padding: 15px;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.admin-officers-page .officers-list li div {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.admin-officers-page .officers-list li p {
+  margin: 5px 0;
+}
+
+.admin-officers-page .officers-list li button {
+  background-color: #007BFF;
+  color: white;
+  padding: 5px 10px;
+  margin: 5px 5px 0 0;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.admin-officers-page .officers-list li button:hover {
+  background-color: #0056b3;
+}
+
+.admin-officers-page .officers-list li button.delete {
+  background-color: #dc3545;
+}
+
+.admin-officers-page .officers-list li button.delete:hover {
+  background-color: #c82333;
+}
+
+.errorMessage {
+  color: red;
+  margin: 20px 0;
+  text-align: center;
+}
+
+@media (min-width: 600px) {
+  .admin-officers-page {
+    padding: 2rem;
   }
+
+  .admin-officers-page .officers-list li div {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .admin-officers-page .officers-list li p {
+    margin: 0;
+  }
+
+  .admin-officers-page .officers-list li button {
+    margin: 0 5px;
+  }
+}
