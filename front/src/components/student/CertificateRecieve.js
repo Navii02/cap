@@ -29,7 +29,7 @@ const CertificateRequestsPage = () => {
 
   const handleDownload = async (fileUrl) => {
     try {
-      const response = await axios.get(fileUrl, { responseType: 'blob' });
+      const response = await axios.get(`${baseurl}${fileUrl}`, { responseType: 'blob' });
       const blob = new Blob([response.data], { type: response.headers['content-type'] });
 
       const link = document.createElement('a');
