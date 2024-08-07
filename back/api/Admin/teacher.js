@@ -3,6 +3,7 @@ const router = express.Router();
 const Faculty = require('../../models/Faculity/FaculitySchema');
 const Tutor = require('../../models/Tutor/TutorSchema');
 const Hod = require('../../models/hod/HodSchema');
+const Officer= require('../../models/Officer/OfficerSchema');
 
 // Fetch all faculty with specific fields
 router.get('/faculty', async (req, res) => {
@@ -33,10 +34,27 @@ router.get('/hods', async (req, res) => {
     res.status(500).json({ error: 'Error fetching HOD data' });
   }
 });
+router.get('/admin/officer', async (req, res) => {
+  try {
+    const officer = await Officer.find();
+
+    res.json(officer);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
 router.delete('/hod/:id', async (req, res) => {
   try {
     await Hod.findByIdAndDelete(req.params.id);
     res.json({ message: 'HOD deleted' });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+router.delete('/officer/:id', async (req, res) => {
+  try {
+    await Officer.findByIdAndDelete(req.params.id);
+    res.json({ message: 'officer deleted' });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

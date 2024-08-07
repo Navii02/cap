@@ -21,6 +21,7 @@ const AdminSchema = new mongoose.Schema({
   role: {
     type: String,
     required: true,
+    default: 'admin',
   },
   date: {
     type: Date,

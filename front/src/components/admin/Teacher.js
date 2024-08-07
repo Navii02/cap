@@ -9,20 +9,23 @@ const AdminPage = () => {
   const [facultyData, setFacultyData] = useState([]);
   const [tutorData, setTutorData] = useState([]);
   const [hodData, setHodData] = useState([]);
+  const[officerData, setOfficerData] = useState([]);
 
   useEffect(() => {
     // Fetch data when the component mounts
     const fetchData = async () => {
       try {
-        const [facultyResponse, tutorResponse, hodResponse] = await Promise.all([
+        const [facultyResponse, tutorResponse, hodResponse,officerResponse] = await Promise.all([
           axios.get(`/api/faculty`),
           axios.get(`/api/admin/tutors`),
-          axios.get(`/api/hods`)
+          axios.get(`/api/hods`),
+          axios.get(`/api/admin/officer`),
         ]);
 
         setFacultyData(facultyResponse.data);
         setTutorData(tutorResponse.data);
         setHodData(hodResponse.data);
+        setOfficerData(officerResponse.data);
       } catch (error) {
         console.error('Error fetching data', error);
       }
@@ -45,6 +48,9 @@ const AdminPage = () => {
         case 'hod':
           setHodData(hodData.filter(item => item._id !== id));
           break;
+          case 'officer':
+            setHodData(officerData.filter(item => item._id !== id));
+            break;
         default:
           break;
       }
@@ -128,6 +134,25 @@ const AdminPage = () => {
             </ul>
           </div>
         );
+        case 'officer':
+          return (
+            <div>
+              <h2>Officer Details</h2>
+              <ul>
+                {hodData.map(officer => (
+                  <li key={officer._id}>
+                        <div>
+                  <p>Name: {officer.name}</p> 
+                   <p>Email:{officer.email} </p> 
+                    <p>Role:{officer.role} </p>  
+                    <p>Created Date:{formatDate(officer.date)}</p> 
+                    <button onClick={() => handleDelete(officer._id, 'hod')}>Delete</button>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          );
       default:
         return <div>Select a section</div>;
     }
@@ -141,6 +166,7 @@ const AdminPage = () => {
         <button onClick={() => setActiveSection('faculty')}>Faculty</button>
         <button onClick={() => setActiveSection('tutor')}>Tutor</button>
         <button onClick={() => setActiveSection('hod')}>HOD</button>
+        <button onClick={() => setActiveSection('officer')}>OFFICER</button>
       </nav>
       <div className="content">
         {renderSection()}

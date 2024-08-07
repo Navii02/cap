@@ -21,6 +21,7 @@ const OfficerSchema = new mongoose.Schema({
   role: {
     type: String,
     required: true,
+    default:'officer',
   },
   date: {
     type: Date,
