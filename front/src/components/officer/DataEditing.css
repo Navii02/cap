@@ -51,6 +51,7 @@ body, html {
 /* Container for data entry form */
 .data-entry-container {
   width: 85%;
+  padding: 0px 20px 0px 20px;
   background: #ffffff; /* White background for the form */
   margin: 80px auto 20px auto;
   border-radius: 8px;
@@ -515,3 +516,4 @@ body, html {
   color: red;
   margin-left: 4px;
 }
+

@@ -1,16 +1,9 @@
-/* Import Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
 
-body {
-  margin: 0;
-  font-family: 'Roboto', sans-serif;
-  background-color: #f4f7fc;
-}
 
 .officer-home-container {
   max-width: 100%;
-  margin: 80px 1px 1px 1px;
-  padding: 20px;
+  margin: auto;
+  padding: 80px;
   text-align: center;
   background-image: url('../../../public/images/WhatsApp\ Image\ 2024-02-01\ at\ 14.57.55_0b5938a6.jpg');
   background-size: cover;
@@ -25,27 +18,28 @@ body {
   position: relative;
 }
 
+.welcome-section{
+  padding-top: 80px;
+}
+
 .overlay {
   background: rgba(255, 255, 255, 0.9); /* White background with less transparency */
   border-radius: 8px;
   padding: 20px;
   width: 80%; /* Adjust the width as needed */
   max-width: 800px; /* Set a maximum width for better readability */
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Add a subtle shadow for depth */
 }
 
 .welcome-header {
   color: #333; /* Adjust the text color for better visibility */
   font-size: 36px;
   margin-bottom: 20px;
-  font-weight: 700; /* Bold the header */
 }
 
 .welcome-text {
   color: #333; /* Adjust the text color for better visibility */
   font-size: 18px;
   line-height: 1.5;
-  margin-bottom: 20px;
 }
 
 .associated-data {
@@ -56,7 +50,6 @@ body {
   color: #333; /* Adjust the text color for better visibility */
   font-size: 24px;
   margin-bottom: 10px;
-  font-weight: 500;
 }
 
 .associated-data p {
@@ -66,7 +59,7 @@ body {
 }
 
 /* Button styles */
-button {
+.button {
   font-family: 'Roboto', sans-serif;
   background-color: #007bff;
   color: #fff;
@@ -96,7 +89,7 @@ button:hover {
 /* Button positioning */
 .approval-button {
   position: absolute;
-  top: 20px;  /* Distance from the top of the container */
+  top: 100px;  /* Distance from the top of the container */
   right: 20px; /* Distance from the right of the container */
   padding: 10px 20px;
   background-color: #007bff; /* Button background color */
