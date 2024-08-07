@@ -117,7 +117,7 @@ const StudentPerformancePage = () => {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="7">Please Select The Course</td>
+                    <td colSpan="7">no student in this course and the semester</td>
                   </tr>
                 )}
               </tbody>
