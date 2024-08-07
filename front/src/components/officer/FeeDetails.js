@@ -1,9 +1,10 @@
 // src/pages/FeeManagementPage.js
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-
+import {baseurl} from '../../url';
 import "./FeeDetails.css";
 import OfficerNavbar from "./OfficerNavbar";
+
 
 const FeeManagementPage = () => {
   const [selectedFee, setSelectedFee] = useState(null);
@@ -45,7 +46,7 @@ const FeeManagementPage = () => {
 
   const fetchFees = async () => {
     try {
-      const response = await axios.get(`/api/fees`);
+      const response = await axios.get(`${baseurl}/api/fees`);
       setFees(response.data);
     } catch (error) {
       console.error('Error fetching fee details:', error);
@@ -72,10 +73,10 @@ const FeeManagementPage = () => {
     try {
       if (selectedFee) {
         // Update existing fee details
-        await axios.put(`/api/fees/update/${selectedFee._id}`, feeDetails);
+        await axios.put(`${baseurl}/api/fees/update/${selectedFee._id}`, feeDetails);
       } else {
         // Add new fee details
-        await axios.post(`/api/fees/add`, feeDetails);
+        await axios.post(`${baseurl}/api/fees/add`, feeDetails);
       }
       fetchFees();
       resetForm();
@@ -93,7 +94,7 @@ const FeeManagementPage = () => {
     if (!confirm) return;
   
     try {
-      await axios.delete(`/api/fees/delete/${feeId}`);
+      await axios.delete(`${baseurl}/api/fees/delete/${feeId}`);
       fetchFees();
       alert("Student declined successfully.");
     } catch (error) {

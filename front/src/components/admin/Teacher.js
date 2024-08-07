@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-
+import {baseurl} from '../../url';
 import Navbar from './AdminNavbar';
 import './teacher.css'; // Import your CSS file for styling
 
@@ -16,10 +16,10 @@ const AdminPage = () => {
     const fetchData = async () => {
       try {
         const [facultyResponse, tutorResponse, hodResponse,officerResponse] = await Promise.all([
-          axios.get(`/api/faculty`),
-          axios.get(`/api/admin/tutors`),
-          axios.get(`/api/hods`),
-          axios.get(`/api/admin/officer`),
+          axios.get(`${baseurl}/api/faculty`),
+          axios.get(`${baseurl}/api/admin/tutors`),
+          axios.get(`${baseurl}/api/hods`),
+          axios.get(`${baseurl}/api/admin/officer`),
         ]);
 
         setFacultyData(facultyResponse.data);
@@ -36,7 +36,7 @@ const AdminPage = () => {
 
   const handleDelete = async (id, type) => {
     try {
-      await axios.delete(`/api/${type}/${id}`);
+      await axios.delete(`${baseurl}/api/${type}/${id}`);
       // Update the state to remove the deleted item
       switch (type) {
         case 'faculty':

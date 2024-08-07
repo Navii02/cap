@@ -3,6 +3,7 @@ import axios from "axios";
 import Navbar from "./OfficerNavbar";
 import "./DataEditing.css";
 import Modal from "react-modal";
+import {baseurl} from '../../url';
 
 
 Modal.setAppElement("#root");
@@ -269,7 +270,7 @@ const DataEntryForm = ({ fetchStudents, onDataEntered }) => {
   
     try {
     await axios.post(
-        `/api/studentadmission`,
+        `${baseurl}/api/studentadmission`,
         sendData,
         { headers: { "Content-Type": "multipart/form-data" } }
       );

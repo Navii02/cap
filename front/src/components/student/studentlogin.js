@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import validator from 'validator';
 import { regexPassword } from '../../utils';
-
+import {baseurl} from '../../url';
 import '../Login.css';
 
 function StudentLogin() {
@@ -61,7 +61,7 @@ function StudentLogin() {
     event.preventDefault();
 
     try {
-      const res = await fetch(`/api/login`, {
+      const res = await fetch(`${baseurl}/api/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

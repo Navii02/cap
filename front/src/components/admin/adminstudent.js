@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './AdminUserManagement.css';
 import Navbar from './AdminNavbar';
-
+import {baseurl} from '../../url';
 const AdminUserManagement = () => {
   const [users, setUsers] = useState([]);
   const [editUser, setEditUser] = useState(null);
@@ -14,7 +14,7 @@ const AdminUserManagement = () => {
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get(`/api/users`);
+      const response = await axios.get(`${baseurl}/api/users`);
       setUsers(response.data);
     } catch (error) {
       console.error('Error fetching users:', error);
@@ -23,7 +23,7 @@ const AdminUserManagement = () => {
 
   const fetchUserStatus = async (userId) => {
     try {
-      const response = await axios.get(` /api/userStatus/${userId}`);
+      const response = await axios.get(` ${baseurl}/api/userStatus/${userId}`);
       setUserStatus((prev) => ({ ...prev, [userId]: response.data }));
       
     } catch (error) {
@@ -33,7 +33,7 @@ const AdminUserManagement = () => {
 
   const handleUpdateUser = async (id) => {
     try {
-      await axios.put(`/api/users/${id}`, editUser);
+      await axios.put(`${baseurl}/api/users/${id}`, editUser);
       fetchUsers();
       setEditUser(null);
     } catch (error) {
@@ -43,7 +43,7 @@ const AdminUserManagement = () => {
 
   const handleDeleteUser = async (id) => {
     try {
-      await axios.delete(`/api/users/${id}`);
+      await axios.delete(`${baseurl}/api/users/${id}`);
       fetchUsers();
     } catch (error) {
       console.error('Error deleting user:', error);

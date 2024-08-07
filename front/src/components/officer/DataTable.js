@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Navbar from "./OfficerNavbar";
 import "./DataTable.css";
+import {baseurl} from '../../url';
 
 
 const StudentList = () => {
@@ -91,7 +92,7 @@ const StudentList = () => {
     const fetchStudents = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(`/api/studentAdmission`);
+        const response = await axios.get(`${baseurl}/api/studentAdmission`);
         const sortedStudents = response.data.sort(
           (a, b) => new Date(b.submissionDate) - new Date(a.submissionDate)
         );
@@ -116,7 +117,7 @@ const StudentList = () => {
       try {
         const courses = ["B.Tech CSE", "B.Tech ECE", "BBA", "BCA", "MCA"];
         const response = await axios.post(
-          `/api/lastAdmissionNumbers`,
+          `${baseurl}/api/lastAdmissionNumbers`,
           { courses }
         );
 
@@ -272,7 +273,7 @@ const StudentList = () => {
     e.preventDefault();
     try {
       await axios.put(
-        `/api/datatable/updateStudent/${studentId}`,
+        `${baseurl}/api/datatable/updateStudent/${studentId}`,
         formData
       );
       setIsSuccess(true);
@@ -292,7 +293,7 @@ const StudentList = () => {
         editableNumbers[course] || lastAdmissionNumbers[course];
 
       // Send the admission number with the API request
-      await axios.post(`/api/approve/${studentId}`, {
+      await axios.post(`${baseurl}/api/approve/${studentId}`, {
         admissionNumber,
       });
       setStudents((prevStudents) =>
@@ -309,7 +310,7 @@ const StudentList = () => {
     if (!confirm) return;
   
     try {
-      await axios.post(`/api/decline/${studentId}`);
+      await axios.post(`${baseurl}/api/decline/${studentId}`);
       setStudents((prevStudents) =>
         prevStudents.filter((student) => student._id !== studentId)
       );
@@ -324,7 +325,7 @@ const StudentList = () => {
   const handlePrintPreview = async (_id, photourl) => {
     try {
     
-      const response = await axios.get(`/api/studentDetails/${_id}`);
+      const response = await axios.get(`${baseurl}/api/studentDetails/${_id}`);
     
       const studentDetails = response.data.studentDetails;
       const feeDetails = response.data.studentDetails.feeDetails;
@@ -1043,7 +1044,7 @@ const StudentList = () => {
 
   const handleSave = async () => {
     try {
-      await axios.put(`/api/updateStudent/${studentId}`, formData);
+      await axios.put(`${baseurl}/api/updateStudent/${studentId}`, formData);
       setIsSuccess(true);
       setEditMode(false);
     } catch (error) {

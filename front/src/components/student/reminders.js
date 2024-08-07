@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Navbar from './UserNavbar';
 import './reminders.css';
-
+import {baseurl} from '../../url';
 import Loading from './Loading'; // Import the Loading component
 
 const Reminders = () => {
@@ -26,16 +26,16 @@ const Reminders = () => {
 
       switch (category) {
         case 'attendance':
-          apiEndpoint = `/api/reminders/${category}?email=${userEmail}&course=${course}`;
+          apiEndpoint = `${baseurl}/api/reminders/${category}?email=${userEmail}&course=${course}`;
           break;
         case 'assignments':
-          apiEndpoint = `/api/reminders/${category}?course=${course}&semester=${semester}&currentyear=${currentYear}`;
+          apiEndpoint = `${baseurl}/api/reminders/${category}?course=${course}&semester=${semester}&currentyear=${currentYear}`;
           break;
         case 'internalMarks':
-          apiEndpoint = `/api/reminders/${category}?email=${userEmail}&course=${course}`;
+          apiEndpoint = `${baseurl}/api/reminders/${category}?email=${userEmail}&course=${course}`;
           break;
         default:
-          apiEndpoint = `/api/reminders/${category}/${userEmail}`;
+          apiEndpoint = `${baseurl}/api/reminders/${category}/${userEmail}`;
       }
 
       try {

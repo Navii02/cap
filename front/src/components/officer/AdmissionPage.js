@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import axios from "axios";
-
+import {baseurl} from '../../url';
 import "./DataEditing.css";
 import Modal from "react-modal";
 
@@ -255,7 +255,7 @@ const DataEntryForm = ({ fetchStudents, onDataEntered }) => {
   
     try {
      await axios.post(
-        `/api/studentadmission`,
+        `${baseurl}/api/studentadmission`,
         sendData,
         { headers: { "Content-Type": "multipart/form-data" } }
       );

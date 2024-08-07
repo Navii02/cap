@@ -1,7 +1,7 @@
 // FacultyHome.js
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-
+import {baseurl} from '../../url';
 import Navbar from "./FacultyNavbar";
 import "./FacultyHome.css";
 
@@ -21,7 +21,7 @@ function FacultyHome() {
       }
 
       try {
-        const response = await axios.get(`/api/teacher-profile?email=${userEmail}`);
+        const response = await axios.get(`${baseurl}/api/teacher-profile?email=${userEmail}`);
         
 
         const { teachername, branches, semesters, subjects } = response.data;

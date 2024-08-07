@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import {baseurl} from '../../url';
 
 const CSVUpload = () => {
   const [file, setFile] = useState(null);
@@ -15,7 +16,7 @@ const CSVUpload = () => {
     formData.append('file', file);
 
     try {
-      const res = await axios.post('api/csv/upload', formData, {
+      const res = await axios.post(`${baseurl}/api/csv/upload`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
       setMessage(res.data.message);

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Navbar from './OfficerNavbar';
 import './OfficeHome.css';
-
+import {baseurl} from '../../url';
 
 
 function OfficeHome() {
@@ -22,7 +22,7 @@ function OfficeHome() {
       }
 
       try {
-        const response = await axios.get(`/api/officerprofile/${userEmail}`);
+        const response = await axios.get(`${baseurl}/api/officerprofile/${userEmail}`);
         const { name, post } = response.data;
 
         setOfficerName(name);
@@ -30,7 +30,7 @@ function OfficeHome() {
         setLoading(false);
 
         // Fetch approval status
-        const statusResponse = await axios.get(`/api/status`);
+        const statusResponse = await axios.get(`${baseurl}/api/status`);
         setApprovalStatus(statusResponse.data.isApproved);
       } catch (error) {
         console.error('Error fetching officer profile:', error);
@@ -43,7 +43,7 @@ function OfficeHome() {
 
   const handleToggleApproval = async () => {
     try {
-      await axios.post(`/api/status/update`, {
+      await axios.post(`${baseurl}/api/status/update`, {
         isApproved: !approvalStatus,
       });
       setApprovalStatus(!approvalStatus);

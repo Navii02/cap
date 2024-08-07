@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
-
+import {baseurl} from '../../url';
 import HodNavbar from './HodNavbar';
 import styles from './AddSubjectForm.module.css';
 
@@ -17,7 +17,7 @@ const ShowAddedSubjects = ({ selectedSemester, selectedCourse }) => {
           console.error('Branch not found in localStorage.');
           return;
         }
-        const response = await axios.get(`/api/hod/subjects`, {
+        const response = await axios.get(`${baseurl}/api/hod/subjects`, {
           params: {
             semester: selectedSemester,
             course: selectedCourse,
@@ -43,7 +43,7 @@ const ShowAddedSubjects = ({ selectedSemester, selectedCourse }) => {
   const handleSaveSubject = async (index) => {
     try {
       const subjectId = addedSubjects[index]._id;
-      await axios.put(`/api/hod/subjects/${subjectId}`, editedSubjects[index]);
+      await axios.put(`${baseurl}/api/hod/subjects/${subjectId}`, editedSubjects[index]);
       alert('Subject details updated successfully!');
       setEditingIndex(null);
       fetchAddedSubjects(); // Refresh data after saving
