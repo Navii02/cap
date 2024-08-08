@@ -1,1 +1,1 @@
-export const baseurl = "https://apicap.cep.ac.in"
+export const baseurl = "http://apicap.cep.ac.in"
