@@ -4,7 +4,7 @@ const path = require('path');
 const app = express();
 const cron = require('node-cron');
 const fs = require('fs');
-const Notice = require('../../models/Notice');
+const Notice = require('../../models/notice');
 
 // Configure multer for file uploads
 const storage = multer.diskStorage({
