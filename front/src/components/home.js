@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Home.css'; // Import the CSS file
 import axios from 'axios';
+import {baseurl} from '../url';
 
 
 const HomePage = () => {
@@ -15,7 +16,7 @@ const HomePage = () => {
 
     const checkApprovalStatus = async () => {
       try {
-        const response = await axios.get(`/api/status`);
+        const response = await axios.get(`${baseurl}/api/status`);
         setIsApproved(response.data.isApproved);
       } catch (error) {
         console.error('Error fetching approval status:', error);

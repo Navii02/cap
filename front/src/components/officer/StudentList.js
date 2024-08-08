@@ -616,7 +616,7 @@ const StudentListOfficer = () => {
    </tr>
    <tr> 
     <td> Copy Of Aadhaar Card</td>
-    <td>${studentDetails.certificates.aadhar ? "Yes" : "No"}</td>
+    <td>${studentDetails.certificates.aadhaar ? "Yes" : "No"}</td>
     <td> Other Certificates</td>
     <td>${studentDetails.certificates.other ? "Yes" : "No"}</td>
     </tr>
