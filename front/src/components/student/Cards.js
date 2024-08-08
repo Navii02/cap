@@ -36,7 +36,7 @@ function Cards() {
             {notices.map((notice, index) => (
               <CardItem
                 key={index}
-                src={notice.image} // Updated
+                src={`${baseurl}/uploads/${notice.image}`} // Updated
                 text={notice.notice}
                 label='Notice'
               />
