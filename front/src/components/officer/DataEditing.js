@@ -21,6 +21,7 @@ const DataEntryForm = ({ fetchStudents, onDataEntered }) => {
     pincode: "",
     religion: "",
     community: "",
+    category: "",
     gender: "",
     dateOfBirth: "",
     bloodGroup: "",
@@ -81,6 +82,8 @@ const DataEntryForm = ({ fetchStudents, onDataEntered }) => {
       communitycertificate: false,
       castecertificate: false,
       aadhaar: false,
+      degreecertificates: false,
+      marklist: false,
       other: false,
     },
   };
@@ -314,6 +317,7 @@ const DataEntryForm = ({ fetchStudents, onDataEntered }) => {
               >
                 <option value="">Select Admission Type</option>
                 <option value="KEAM">KEAM</option>
+                <option value="LBS-MCA">LBS-MCA</option>
                 <option value="SPOT">SPOT</option>
                 <option value="LET">LET</option>
               </select>
@@ -471,6 +475,16 @@ const DataEntryForm = ({ fetchStudents, onDataEntered }) => {
                 required
               />
             </div>
+            <div className="form-group">
+              <label className="required">Category:</label>
+              <input
+                type="text"
+                name="category"
+                value={formData.category}
+                onChange={handleChange}
+                required
+              />
+            </div>
           </div>
           <div className="row">
             <div className="form-group">
@@ -555,7 +569,7 @@ const DataEntryForm = ({ fetchStudents, onDataEntered }) => {
             />
           </div>
           <div className="parent-details-row">
-            <div className="form-group">
+            <div className="form-group">    
               <label className="required">Entrance Roll No:</label>
               <input
                 type="text"
@@ -1037,6 +1051,31 @@ const DataEntryForm = ({ fetchStudents, onDataEntered }) => {
               <span className="checkmark"></span>
               <label htmlFor="castecertificate">Caste Certificate</label>
             </div>
+
+
+            <div className="checkbox-custom">
+              <input
+                type="checkbox"
+                id="degreecertificates"
+                name="degreecertificates"
+                checked={formData.certificates.degreecertificates}
+                onChange={handleChange}
+              />
+              <span className="checkmark"></span>
+              <label htmlFor="degreecertificates">Degree Certificate</label>
+            </div>
+            <div className="checkbox-custom">
+              <input
+                type="checkbox"
+                id="marklist"
+                name="marklist"
+                checked={formData.certificates.marklist}
+                onChange={handleChange}
+              />
+              <span className="checkmark"></span>
+              <label htmlFor="marklist">Mark List</label>
+            </div>
+            
             <div className="checkbox-custom">
               <input
                 type="checkbox"

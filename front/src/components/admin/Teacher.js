@@ -144,7 +144,7 @@ const AdminPage = () => {
                         <div>
                   <p>Name: {officer.name}</p> 
                    <p>Email:{officer.email} </p> 
-                    <p>Role:{officer.role} </p>  
+                 
                     <p>Created Date:{formatDate(officer.date)}</p> 
                     <button onClick={() => handleDelete(officer._id, 'hod')}>Delete</button>
                     </div>

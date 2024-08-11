@@ -35,6 +35,7 @@ router.put('/students/:id', async (req, res) => {
       collegemail,
       RegisterNo,
       lab,
+      isminor,
     } = req.body;
 
     const student = await Student.findByIdAndUpdate(
@@ -51,6 +52,7 @@ router.put('/students/:id', async (req, res) => {
         collegemail,
         RegisterNo,
         lab,
+        isminor,
       },
       { new: true }
     );

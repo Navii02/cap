@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import {baseurl} from '../../url';
+import { baseurl } from '../../url';
 import Navbar from "./TutorNavbar";
 import "./tutorstudentlist.css";
 
@@ -8,7 +8,6 @@ const TutorUpdates = () => {
   const [students, setStudents] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
   const [semester, setSemester] = useState("");
-
   const [registerNumberPrefix, setRegisterNumberPrefix] = useState("");
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [formData, setFormData] = useState({
@@ -24,6 +23,7 @@ const TutorUpdates = () => {
     collegemail: "",
     RegisterNo: "",
     lab: "",
+    isMinor: true, // Add this line
   });
   const [successMessage, setSuccessMessage] = useState("");
 
@@ -36,10 +36,10 @@ const TutorUpdates = () => {
   }, []);
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, type, checked } = e.target;
     setFormData({
       ...formData,
-      [name]: value,
+      [name]: type === "checkbox" ? checked : value,
     });
   };
 
@@ -129,14 +129,14 @@ const TutorUpdates = () => {
   const handleAlphabeticalRollNumberAssignment = async () => {
     const tutorclass = localStorage.getItem("tutorclass");
     const academicYear = localStorage.getItem("academicYear");
-  
+
     try {
       const rollNumberPrefix = "1"; // Set your register number prefix here
       await axios.put(
         `${baseurl}/api/students/roll-numbers/${encodeURIComponent(tutorclass)}/${academicYear}`,
         { rollNumberPrefix }
       );
-  
+
       fetchStudents(tutorclass, academicYear); // Refresh the list after updating
       setSuccessMessage("Roll numbers assigned based on alphabetical order successfully!");
     } catch (error) {
@@ -144,8 +144,7 @@ const TutorUpdates = () => {
       setErrorMessage("Error assigning roll numbers");
     }
   };
-  
-  
+
   const handleEdit = (student) => {
     setSelectedStudent(student._id);
     setFormData({
@@ -164,6 +163,7 @@ const TutorUpdates = () => {
       collegemail: student.collegemail,
       RegisterNo: student.RegisterNo,
       lab: student.lab,
+      isMinor: student.isMinor, // Add this line
     });
   };
 
@@ -221,6 +221,7 @@ const TutorUpdates = () => {
       collegemail: "",
       RegisterNo: "",
       lab: "",
+      isMinor: false, // Add this line
     });
   };
 
@@ -254,190 +255,172 @@ const TutorUpdates = () => {
     }
   };
 
-
   return (
     <>
-    <div>
-      <Navbar />
-
-      <div className="student-list-container">
-        <h1>Student Details</h1>
-        {successMessage && <p className="success-message">{successMessage}</p>}
-        {errorMessage && <p className="error-message">{errorMessage}</p>}
-
-        <div className="student-list">
-          {/* Form to update all students' semester */}
-          {/* Form to update all students' semester */}
-<form onSubmit={handleSemesterSubmit} className="update-form">
-  <label htmlFor="semester">Update Semester for All Students:</label>
-  <input
-    type="text"
-    id="semester"
-    value={semester}
-    onChange={handleSemesterChange}
-    placeholder="Enter Semester"
-    required
-  />
-  <div className="button-container">
-    <button type="submit">Update All Students</button>
-  </div>
-</form>
-
-{/* Form to update all students' register number */}
-<form onSubmit={handleRegisterNumberSubmit} className="update-form">
-  <label htmlFor="registerNumberPrefix">Enter Starting Register Number:</label>
-  <input
-    type="text"
-    id="registerNumberPrefix"
-    value={registerNumberPrefix}
-    onChange={handleRegisterNumberChange}
-    placeholder="Enter Starting Register Number"
-    required
-  />
-  <div className="button-container">
-    <button type="submit">Update All Register Numbers</button>
-  </div>
-</form>
-
-{/* Button to assign labs to students */}
-<div className="button-container">
-  <button onClick={handleLabAssignment}>Assign Labs to Students</button>
-  <button onClick={handleEmailInitialization}>Initialize College Emails</button>
-  <button onClick={handleAlphabeticalRollNumberAssignment}>Assign Roll Numbers </button>
-</div>
-
-          {/* Show the list of students only if no student is selected for editing */}
-          {selectedStudent === null &&
-            students.map((student) => (
-              <div key={student._id} className="student-item">
-                <p><strong>Roll No:</strong>{student.RollNo}</p>
-                <p><strong>Name:</strong> {student.name}</p>
-                <p><strong>Admission Number:</strong> {student.admissionNumber}</p>
-                <p><strong>RegisterNo:</strong> {student.RegisterNo}</p>
-                <p><strong>Semester:</strong> {student.semester}</p>
-                <p><strong>AcademicYear:</strong> {student.academicYear}</p>
-                <p>
-                  <strong>Date of Birth:</strong>{" "}
-                  {student.dateOfBirth ? formatDate(student.dateOfBirth) : ""}
-                </p>
-                <p><strong>Gender:</strong> {student.gender}</p>
-                <p><strong>Address:</strong> {student.address}</p>
-                <p><strong>Email:</strong> {student.email}</p>
-                <p><strong>Phone:</strong> {student.mobileNo}</p>
-                <p><strong>College Email:</strong> {student.collegemail}</p>
-                <p><strong>Lab:</strong> {student.lab}</p>
-                <button onClick={() => handleEdit(student)}>Edit</button>
-                <hr />
-              </div>
+      <div>
+        <Navbar />
+        <h1>Students List</h1>
+        <form onSubmit={handleSemesterSubmit}>
+          <input
+            type="text"
+            value={semester}
+            onChange={handleSemesterChange}
+            placeholder="Enter semester"
+          />
+          <button type="submit">Update Semester</button>
+        </form>
+        <form onSubmit={handleRegisterNumberSubmit}>
+          <input
+            type="text"
+            value={registerNumberPrefix}
+            onChange={handleRegisterNumberChange}
+            placeholder="Enter starting register number"
+          />
+          <button type="submit">Update Register Numbers</button>
+        </form>
+        <button onClick={handleAlphabeticalRollNumberAssignment}>
+          Assign Roll Numbers Alphabetically
+        </button>
+        <button onClick={handleLabAssignment}>Assign Labs</button>
+        <button onClick={handleEmailInitialization}>
+          Initialize College Emails
+        </button>
+        <table>
+          <thead>
+            <tr>
+              <th>Roll No</th>
+              <th>Name</th>
+              <th>Semester</th>
+              <th>Academic Year</th>
+              <th>Admission Number</th>
+              <th>Date of Birth</th>
+              <th>Address</th>
+              <th>Email</th>
+              <th>Mobile No</th>
+              <th>College Email</th>
+              <th>Register No</th>
+              <th>Lab</th>
+              <th>Minor</th> {/* Add this line */}
+              <th>Edit</th>
+            </tr>
+          </thead>
+          <tbody>
+            {students.map((student) => (
+              <tr key={student._id}>
+                <td>{student.RollNo}</td>
+                <td>{student.name}</td>
+                <td>{student.semester}</td>
+                <td>{student.academicYear}</td>
+                <td>{student.admissionNumber}</td>
+                <td>{student.dateOfBirth && formatDate(student.dateOfBirth)}</td>
+                <td>{student.address}</td>
+                <td>{student.email}</td>
+                <td>{student.mobileNo}</td>
+                <td>{student.collegemail}</td>
+                <td>{student.RegisterNo}</td>
+                <td>{student.lab}</td>
+                <td>{student.isMinor ? "Yes" : "No"}</td> {/* Add this line */}
+                <td>
+                  <button onClick={() => handleEdit(student)}>Edit</button>
+                </td>
+              </tr>
             ))}
-
-          {/* Show the form for editing only if a student is selected */}
-          {selectedStudent !== null && (
-            <form onSubmit={handleFormSubmit} className="student-form">
+          </tbody>
+        </table>
+        {selectedStudent && (
+          <form onSubmit={handleFormSubmit}>
+            <input
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleInputChange}
+              placeholder="Name"
+            />
+            <input
+              type="text"
+              name="semester"
+              value={formData.semester}
+              onChange={handleInputChange}
+              placeholder="Semester"
+            />
+            <input
+              type="text"
+              name="academicYear"
+              value={formData.academicYear}
+              onChange={handleInputChange}
+              placeholder="Academic Year"
+            />
+            <input
+              type="text"
+              name="admissionNumber"
+              value={formData.admissionNumber}
+              onChange={handleInputChange}
+              placeholder="Admission Number"
+            />
+            <input
+              type="date"
+              name="dateOfBirth"
+              value={formData.dateOfBirth}
+              onChange={handleInputChange}
+              placeholder="Date of Birth"
+            />
+            <input
+              type="text"
+              name="address"
+              value={formData.address}
+              onChange={handleInputChange}
+              placeholder="Address"
+            />
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleInputChange}
+              placeholder="Email"
+            />
+            <input
+              type="text"
+              name="mobileNo"
+              value={formData.mobileNo}
+              onChange={handleInputChange}
+              placeholder="Mobile No"
+            />
+            <input
+              type="email"
+              name="collegemail"
+              value={formData.collegemail}
+              onChange={handleInputChange}
+              placeholder="College Email"
+            />
+            <input
+              type="text"
+              name="RegisterNo"
+              value={formData.RegisterNo}
+              onChange={handleInputChange}
+              placeholder="Register No"
+            />
+            <input
+              type="text"
+              name="lab"
+              value={formData.lab}
+              onChange={handleInputChange}
+              placeholder="Lab"
+            />
+            <label>
+              Minor:
               <input
-                type="text"
-                name="name"
-                value={formData.name}
+                type="checkbox"
+                name="isMinor"
+                checked={formData.isMinor}
                 onChange={handleInputChange}
-                placeholder="Name"
-                required
               />
-              <input
-                type="text"
-                name="admissionNumber"
-                value={formData.admissionNumber}
-                onChange={handleInputChange}
-                placeholder="Admission Number"
-                required
-              />
-              <input
-                type="text"
-                name="RegisterNo"
-                value={formData.RegisterNo}
-                onChange={handleInputChange}
-                placeholder="Register Number"
-              />
-               <input
-                type="text"
-                name="RollNo"
-                value={formData.RollNo}
-                onChange={handleInputChange}
-                placeholder="Roll No"
-              />
-              <input
-                type="text"
-                name="semester"
-                value={formData.semester}
-                onChange={handleInputChange}
-                placeholder="Semester"
-                required
-              />
-              <input
-                type="text"
-                name="academicYear"
-                value={formData.academicYear}
-                onChange={handleInputChange}
-                placeholder="Academic Year"
-                required
-              />
-              <input
-                type="date"
-                name="dateOfBirth"
-                value={formData.dateOfBirth}
-                onChange={handleInputChange}
-                required
-              />
-              <input
-                type="text"
-                name="address"
-                value={formData.address}
-                onChange={handleInputChange}
-                placeholder="Address"
-                required
-              />
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleInputChange}
-                placeholder="Email"
-                required
-              />
-              <input
-                type="text"
-                name="mobileNo"
-                value={formData.mobileNo}
-                onChange={handleInputChange}
-                placeholder="Mobile No"
-                required
-              />
-              <input
-                type="text"
-                name="collegemail"
-                value={formData.collegemail}
-                onChange={handleInputChange}
-                placeholder="College Email"
-                required
-              />
-        
-               
-                  <select
-                      name="lab"
-                      value={formData.lab}
-                    onChange={handleInputChange}
-                   
-                  >
-                    <option value="">Select Lab</option>
-                    <option value="Lab 1">Lab 1</option>
-                    <option value="Lab 2">Lab 2</option>
-                  </select>
-               
-              <button type="submit">Update</button>
-              <button type="button" onClick={handleCancel}>Cancel</button>
-            </form>
-          )}
-        </div>
-      </div>
+            </label>
+            <button type="submit">Update Student</button>
+            <button type="button" onClick={handleCancel}>Cancel</button>
+          </form>
+        )}
+        {errorMessage && <p className="error">{errorMessage}</p>}
+        {successMessage && <p className="success">{successMessage}</p>}
       </div>
     </>
   );

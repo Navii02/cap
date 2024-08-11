@@ -17,6 +17,7 @@ const ApprovedAndRemoved = () => {
     pincode: "",
     religion: "",
     community: "",
+    category:'',
     gender: "",
     dateOfBirth: "",
     bloodGroup: "",
@@ -74,6 +75,8 @@ const ApprovedAndRemoved = () => {
       communitycertificate: false,
       castecertificate: false,
       aadhaar: false,
+      marklist:false,
+      degreecertificates: false,
       other: false,
     },
 
@@ -332,12 +335,12 @@ const ApprovedAndRemoved = () => {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${studentDetails.name}'s Details</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <style>
+   <style>
     body {
       margin: 0;
       padding: 0;
       font-family: Calibri, sans-serif;
-      font-size: 12pt;
+      font-size: 18pt;
     }
     h1, h2 {
       font-weight: bold;
@@ -347,18 +350,18 @@ const ApprovedAndRemoved = () => {
     table {
       border-collapse: collapse;
       width: 100%;
-      font-size: 11pt;
+      font-size: 16pt;
       table-layout: auto;
     }
     td, th {
       border: 1.5pt solid black;
-      padding: 8pt;
+      padding: 10pt;
     }
     .header {
       text-align: center;
       position: relative;
       padding: 10pt 0;
-      font-size: 14pt;
+      font-size: 18pt;
       font-weight: bold;
     }
     .logo {
@@ -379,7 +382,7 @@ const ApprovedAndRemoved = () => {
     }
     .declaration {
       margin: 10px;
-      font-size: 11pt;
+      font-size: 12pt;
     }
     .declaration p {
       margin: 3px 0;
@@ -387,12 +390,12 @@ const ApprovedAndRemoved = () => {
     .declaration .heading {
       text-align: center;
       font-weight: bold;
-      font-size: 16pt;
+      font-size: 14pt;
       margin-bottom: 5pt;
     }
     .declaration .content {
       text-align: left;
-      font-size: 13pt;
+      font-size: 10pt;
     }
     .signature {
       margin-top: 20px;
@@ -410,7 +413,7 @@ const ApprovedAndRemoved = () => {
       text-align: right;
     }
     .signature .field {
-      margin-top: 15px;
+      margin-top: 13px;
     }
     .centered-table {
       width: 80%; /* Adjust the width of the table as needed */
@@ -479,7 +482,7 @@ const ApprovedAndRemoved = () => {
       <td colspan="2" style="font-weight:bold;">Admission No: ${studentDetails.admissionId}</td>
       <td colspan="2" style="text-align: left;">Submission Date: ${formatDate(studentDetails.submissionDate)}</td>
     </tr>
-    <tr>
+     <tr>
       <td>Admission Type</td>
       <td>${studentDetails.admissionType}</td>
       <td>Allotment Category</td>
@@ -507,10 +510,12 @@ const ApprovedAndRemoved = () => {
       <td>${studentDetails.pincode}</td>
     </tr>
     <tr>
-      <td>Religion</td>
-      <td>${studentDetails.religion}</td>
-      <td>Community</td>
-      <td>${studentDetails.community}</td>
+      <td>Religion and Community</td>
+      <td>${studentDetails.religion},${studentDetails.community}</td>
+      
+       <td>Category</td>
+      <td>${studentDetails.category}</td>
+      
     </tr>
     <tr>
       <td>Gender</td>
@@ -646,7 +651,8 @@ const ApprovedAndRemoved = () => {
         <td>Other</td>
       <td>${studentDetails.achievements.other ?? "Nil"}</td>
       </tr>
-    <tr>
+    
+      <tr>
         <td colspan="4" style="text-align: center; font-weight: bold;">Certificates Provided</td>
       </tr>
       <tr>
@@ -685,6 +691,12 @@ const ApprovedAndRemoved = () => {
    <tr> 
     <td> Copy Of aadhaar Card</td>
     <td>${studentDetails.certificates.aadhaar ? "Yes" : "No"}</td>
+    <td> Degree Certificate</td>
+    
+    <td>${studentDetails.certificates.degreecertificates ? "Yes" : "No"}</td>
+    </tr><tr>
+    <td> Marklist</td>
+    <td>${studentDetails.certificates.marklist ? "Yes" : "No"}</td>
     <td> Other Certificates</td>
     <td>${studentDetails.certificates.other ? "Yes" : "No"}</td>
     </tr>
@@ -701,22 +713,16 @@ const ApprovedAndRemoved = () => {
     
 <p class="content">.............................................................................................................................................................................................................................................................................................................................................................................</p>
    <br/>
-<p class="content">.............................................................................................................................................................................................................................................................................................................................................................................  </p>
-      
-    <br/><p class="content">.............................................................................................................................................................................................................................................................................................................................................................................  </p>
- <br/>
- <br/>
+
     <p class="heading">Declaration of Student:</p>
      <br/>
     <p class="content">
       I .......................................................................... hereby undertake on being admitted to the college to abide by the rules and regulations of the college during the course of my study. I will not engage in any undesirable activity either inside or outside the college that will adversely affect orderly working, discipline, and the regulations of the college.
     </p>
-    <br><br>
+    <br>
     
-    <p><strong>Name:</strong> ...........................................</p>
     <p><strong>Signature:</strong> ...........................................</p>
-   
-       <br>  <br>   <br>
+      <br>
     <p class="heading">Declaration of Parent:</p>
      <br/>
     <p class="content">
@@ -726,7 +732,7 @@ const ApprovedAndRemoved = () => {
   </div>
   <div class="signature">
       <div class="left">
-        <p><strong>Name:</strong> ...........................................</p>
+       
         <p><strong>Signature:</strong> ...........................................</p>
       </div>
       <div class="right">
@@ -735,11 +741,12 @@ const ApprovedAndRemoved = () => {
         <p>Principal</p>
       </div>
     </div>
-    <br/>
-    <br>
+ 
+    <div class="signature">
        <p><strong>Verifing Officer:</strong> ...........................................</p>
-       <br>
+    
        <p><strong>Signature:</strong> ...........................................</p>
+  </div>
   </div>
    <div class="page-break"></div>
 
@@ -801,9 +808,7 @@ const ApprovedAndRemoved = () => {
    </p>
  <br/>
       <br/>
-       <br/>
-      <br/> <br/>
-      <br/> <br/>
+       <br/><br/>
       <br/>
 <p class="content">
   <span class="cutting-symbol">
@@ -813,8 +818,8 @@ const ApprovedAndRemoved = () => {
 </p>
        <br/>
       <br/> <br/>
-      <br/> <br/>
-      <br/> <br/>
+     
+    
       <br/>
 
 
@@ -899,11 +904,13 @@ const ApprovedAndRemoved = () => {
 
       feeCategory: student.feeCategory,
       name: student.name,
+      admissionNumber:student.admissionNumber,
       address: student.address,
       permanentAddress: student.permanentAddress,
       pincode: student.pincode,
       religion: student.religion,
       community: student.community,
+      category:student.category,
       gender: student.gender,
       dateOfBirth: formattedDateOfBirth,
       bloodGroup: student.bloodGroup,
@@ -962,6 +969,8 @@ const ApprovedAndRemoved = () => {
         communitycertificate: student.certificates.communitycertificate,
         castecertificate: student.certificates.castecertificate,
         aadhaar: student.certificates.aadhaar,
+        marklist:student.certificates.marklist,
+       degreecertificates:student.certificates.degreecertificates,
         other: student.certificates.other,
       },
 
@@ -1084,6 +1093,16 @@ const ApprovedAndRemoved = () => {
               <div className="page-title">Admission Form</div>
               <hr className="divider"></hr>
               <form className="form" onSubmit={handleSubmit}>
+              <div className="form-group">
+              <label>Admission No:</label>
+              <input
+                    type="text"
+                    name="admissionNumber"
+                    value={formData.admissionNumber}
+                    onChange={handleInputChange}
+                    required
+                  />
+                </div>
                 <div className="form-group">
                   <label>Fee Category:</label>
                   <select
@@ -1176,6 +1195,16 @@ const ApprovedAndRemoved = () => {
                       required
                     />
                   </div>
+                  <div className="form-group">
+              <label className="required">Category:</label>
+              <input
+                type="text"
+                name="category"
+                value={formData.category}
+                onChange={handleInputChange}
+                required
+              />
+            </div>
                 </div>
                 <div className="row">
                   <div className="form-group">
@@ -1758,6 +1787,30 @@ const ApprovedAndRemoved = () => {
                     <span className="checkmark"></span>
                     <label htmlFor="castecertificate">Caste Certificate</label>
                   </div>
+                              
+            <div className="checkbox-custom">
+              <input
+                type="checkbox"
+                id="degreecertificates"
+                name="degreecertificates"
+                checked={formData.certificates.degreecertificates}
+                onChange={handleInputChange}
+              />
+              <span className="checkmark"></span>
+              <label htmlFor="degreecertificates">Degree Certificate</label>
+            </div>
+            <div className="checkbox-custom">
+              <input
+                type="checkbox"
+                id="marklist"
+                name="marklist"
+                checked={formData.certificates.marklist}
+                onChange={handleInputChange}
+              />
+              <span className="checkmark"></span>
+              <label htmlFor="marklist">Mark List</label>
+            </div>
+            
                   <div className="checkbox-custom">
                     <input
                       type="checkbox"
@@ -1766,6 +1819,7 @@ const ApprovedAndRemoved = () => {
                       checked={formData.certificates.other}
                       onChange={handleInputChange}
                     />
+        
                     <span className="checkmark"></span>
                     <label htmlFor="other">Other</label>
                   </div>

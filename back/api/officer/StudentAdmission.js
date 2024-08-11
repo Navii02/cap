@@ -48,7 +48,7 @@ router.post('/studentAdmission', upload.single('photo'), async (req, res) => {
 
     // Generate new admission ID
     const currentYear = new Date().getFullYear().toString().slice(-2); // Get last 2 digits of current year
-    const lastStudent = await Student.findOne().sort({ admissionId: -1 });
+    const lastStudent = await ApprovedStudent.findOne().sort({ admissionId: -1 });
 
     let newAdmissionId = "001"; // Default ID if no previous students found
     if (lastStudent && lastStudent.admissionId) {
@@ -112,6 +112,8 @@ router.post('/studentAdmission', upload.single('photo'), async (req, res) => {
         communitycertificate: req.body["certificates.communitycertificate"],
         castecertificate: req.body["certificates.castecertificate"],
         aadhaar: req.body["certificates.aadhaar"],
+        marklist: req.body["certificates.marklist"],
+        degreecertificates: req.body["certificates.degreecertificates"],
         other: req.body["certificates.other"],
       },
     });

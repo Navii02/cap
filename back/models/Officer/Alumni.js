@@ -9,30 +9,36 @@ const AlumniSchema = new mongoose.Schema({
   allotmentCategory: String,
   feeCategory: String,
   otherCertificate: String,
+  category:String,
   photo: String, // Store file path for photo
   address: String,
-  permanentAddress: String,
+  permanentAddress: { type: String, default: 'N/A' },
   pincode: String,
-  religion: String,
-  community: String,
+  religion: { type: String, default: 'N/A' },
+  community:{ type: String, default: 'N/A' },
   gender: String,
   dateOfBirth: Date,
-  bloodGroup: String,
+  bloodGroup: { type: String, default: 'N/A' },
   mobileNo: String,
   whatsappNo: String,
-  entranceExam: String,
-  entranceRollNo: String,
-  entranceRank: String,
-  aadharNo: String,
-  course: { type: String },
+  entranceExam: { type: String, default: 'N/A' },
+  entranceRollNo: { type: String, default: 'N/A' },
+  entranceRank: { type: String, default: 'N/A' },
+  aadharNo: { type: String, default: 'N/A' },
+  physics: String,
+  chemistry: String,
+  maths: String,
+  RollNo: String,
+  boardType:String, 
+  course: String,
   qualify: {
-    exam: String,
-    board: String,
-    regNo: String,
-    examMonthYear: String,
-    percentage: String,
-    institution: String,
-    cgpa: String,
+    exam: { type: String, default: 'N/A' },
+    board: { type: String, default: 'N/A' },
+    regNo:{ type: String, default: 'N/A' },
+    examMonthYear: { type: String, default: 'N/A' },
+    percentage:{ type: String, default: 'N/A' },
+    institution: { type: String, default: 'N/A' },
+    cgpa:{ type: String, default: 'N/A' },
   },
   parentDetails: {
     fatherName: { type: String, default: 'Nil' },
@@ -42,38 +48,76 @@ const AlumniSchema = new mongoose.Schema({
     motherOccupation: { type: String, default: 'Nil' },
     motherMobileNo: { type: String, default: 'Nil' },
   },
-  annualIncome: String,
-  nativity: String,
+  annualIncome: { type: String, default: 'N/A' },
+  nativity:  { type: String, default: 'N/A' },
   bankDetails: {
-    bankName: String,
-    branch: String,
-    accountNo: String,
-    ifscCode: String,
+    bankName: { type: String, default: 'N/A' },
+    branch:  { type: String, default: 'N/A' },
+    accountNo:  { type: String, default: 'N/A' },
+    ifscCode:  { type: String, default: 'N/A' },
   },
   achievements: {
     arts: { type: String, default: 'Nil' },
-    sports: { type: String, default: 'Nil' },
+    sports:  { type: String, default: 'Nil' },
     other: { type: String, default: 'Nil' },
   },
+  marks:{
+    boardType: { type: String, default: 'Nil' },
+    physics:{ type: String, default: 'Nil' },
+    chemistry:{ type: String, default: 'Nil' },
+    maths: { type: String, default: 'Nil' },
+  },
+  
+  certificates: {
+    tenth: { type: Boolean, default: false },
+    plusTwo: { type: Boolean, default: false },
+    tcandconduct: { type: Boolean, default: false },
+    allotmentmemo: { type: Boolean, default: false },
+    Datasheet: { type: Boolean, default: false },
+    physicalfitness: { type: Boolean, default: false },
+    passportsizephoto: { type: Boolean, default: false },
+    incomecertificates: { type: Boolean, default: false },
+    communitycertificate: { type: Boolean, default: false },
+    castecertificate: { type: Boolean, default: false },
+    aadhaar: { type: Boolean, default: false },
+    marklist: { type: Boolean, default: false },
+    degreecertificates: { type:Boolean, default: false},
+    other: { type: Boolean, default: false },
+  },
+  RollNo: { type: String,default: 'Nil'},
   academicYear: String,
-  semester: { type: String, required: true },
+  semester: String,
   assignments: { type: String, default: 'Not Assigned' },
   exams: { type: String, default: 'Not Scheduled' },
   
   installmentsPaid: [Number],
  
- RegisterNo: { type: String },
+ RegisterNo: { type: String,default: 'Nil'},
   email: { type: String, required: true },
-  collegemail: String, // Array of strings (email addresses)
+  collegemail:{ type: String,default: 'Nil'}, // Array of strings (email addresses)
   tutormessage: [String], // Array of strings
+  isMinor: { type: Boolean, default: true},
   internalMarks: [
     {
-      
       subject: String,
-      examMarks: Number,
-      assignmentMarks: Number,
-      attendance: Number,
-      totalMarks: String
+  examMarks1: { type: Number, default: 0 },
+  examMarks2: { type: Number, default: 0 },
+  assignmentMarks1: { type: Number, default: 0 },
+  assignmentMarks2: { type: Number, default: 0 },
+  attendance: { type: Number, default: 0 },
+  internalMarks: { type: Number, default: 0 },
+  recordMarks: { type: Number, default: 0 },
+  totalMarks: { type: Number, default: 0 },
+    }
+  ],
+  LabInternal:[
+    {
+      subject:String,
+      attendance: { type: Number, default: 0 },
+  internalMarks: { type: Number, default: 0 },
+  recordMarks: { type: Number, default: 0 },
+  totalMarks: { type: Number, default: 0 },
+
     }
   ],
   attendance: [
@@ -82,23 +126,20 @@ const AlumniSchema = new mongoose.Schema({
     subject: { type: String, required: true },
     hour: { type: String, required: true },
     teachername: { type: String, required: true },
-    status: { type: String, required: true }
+    status: { type: String, required: true },
+    lab: { type: String},
     }
   ],
+  lab: { type: String,default:'Lab 1'},
   subjectPercentages: [{
     subject: { type: String, required: true },
     percentage: { type: Number, required: true }
   }],
   submissionDate: {
     type: Date,
-   // Set the default value to the current date and time
+    // Set the default value to the current date and time
   },
-  marks:{
-    boardType: { type: String, default: 'Nil' },
-    physics:{ type: String, default: 'Nil' },
-    chemistry:{ type: String, default: 'Nil' },
-    maths: { type: String, default: 'Nil' },
-  },
+
 });
 
 

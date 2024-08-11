@@ -401,7 +401,7 @@ const StudentList = () => {
       margin: 0;
       padding: 0;
       font-family: Calibri, sans-serif;
-      font-size: 12pt;
+      font-size: 18pt;
     }
     h1, h2 {
       font-weight: bold;
@@ -411,18 +411,18 @@ const StudentList = () => {
     table {
       border-collapse: collapse;
       width: 100%;
-      font-size: 11pt;
+      font-size: 16pt;
       table-layout: auto;
     }
     td, th {
       border: 1.5pt solid black;
-      padding: 8pt;
+      padding: 10pt;
     }
     .header {
       text-align: center;
       position: relative;
       padding: 10pt 0;
-      font-size: 14pt;
+      font-size: 18pt;
       font-weight: bold;
     }
     .logo {
@@ -443,7 +443,7 @@ const StudentList = () => {
     }
     .declaration {
       margin: 10px;
-      font-size: 11pt;
+      font-size: 12pt;
     }
     .declaration p {
       margin: 3px 0;
@@ -451,12 +451,12 @@ const StudentList = () => {
     .declaration .heading {
       text-align: center;
       font-weight: bold;
-      font-size: 16pt;
+      font-size: 14pt;
       margin-bottom: 5pt;
     }
     .declaration .content {
       text-align: left;
-      font-size: 13pt;
+      font-size: 10pt;
     }
     .signature {
       margin-top: 20px;
@@ -474,7 +474,7 @@ const StudentList = () => {
       text-align: right;
     }
     .signature .field {
-      margin-top: 15px;
+      margin-top: 13px;
     }
     .centered-table {
       width: 80%; /* Adjust the width of the table as needed */
@@ -571,10 +571,12 @@ const StudentList = () => {
       <td>${studentDetails.pincode}</td>
     </tr>
     <tr>
-      <td>Religion</td>
-      <td>${studentDetails.religion}</td>
-      <td>Community</td>
-      <td>${studentDetails.community}</td>
+      <td>Religion and Community</td>
+      <td>${studentDetails.religion},${studentDetails.community}</td>
+      
+       <td>Category</td>
+      <td>${studentDetails.category}</td>
+      
     </tr>
     <tr>
       <td>Gender</td>
@@ -750,6 +752,12 @@ const StudentList = () => {
    <tr> 
     <td> Copy Of aadhaar Card</td>
     <td>${studentDetails.certificates.aadhaar ? "Yes" : "No"}</td>
+    <td> Degree Certificate</td>
+    
+    <td>${studentDetails.certificates.degreecertificates ? "Yes" : "No"}</td>
+    </tr><tr>
+    <td> Marklist</td>
+    <td>${studentDetails.certificates.marklist ? "Yes" : "No"}</td>
     <td> Other Certificates</td>
     <td>${studentDetails.certificates.other ? "Yes" : "No"}</td>
     </tr>
@@ -766,22 +774,16 @@ const StudentList = () => {
     
 <p class="content">.............................................................................................................................................................................................................................................................................................................................................................................</p>
    <br/>
-<p class="content">.............................................................................................................................................................................................................................................................................................................................................................................  </p>
-      
-    <br/><p class="content">.............................................................................................................................................................................................................................................................................................................................................................................  </p>
- <br/>
- <br/>
+
     <p class="heading">Declaration of Student:</p>
      <br/>
     <p class="content">
       I .......................................................................... hereby undertake on being admitted to the college to abide by the rules and regulations of the college during the course of my study. I will not engage in any undesirable activity either inside or outside the college that will adversely affect orderly working, discipline, and the regulations of the college.
     </p>
-    <br><br>
+    <br>
     
-    <p><strong>Name:</strong> ...........................................</p>
     <p><strong>Signature:</strong> ...........................................</p>
-   
-       <br>  <br>   <br>
+      <br>
     <p class="heading">Declaration of Parent:</p>
      <br/>
     <p class="content">
@@ -791,7 +793,7 @@ const StudentList = () => {
   </div>
   <div class="signature">
       <div class="left">
-        <p><strong>Name:</strong> ...........................................</p>
+       
         <p><strong>Signature:</strong> ...........................................</p>
       </div>
       <div class="right">
@@ -800,11 +802,12 @@ const StudentList = () => {
         <p>Principal</p>
       </div>
     </div>
-    <br/>
-    <br>
+ 
+    <div class="signature">
        <p><strong>Verifing Officer:</strong> ...........................................</p>
-       <br>
+    
        <p><strong>Signature:</strong> ...........................................</p>
+  </div>
   </div>
    <div class="page-break"></div>
 
@@ -866,9 +869,7 @@ const StudentList = () => {
    </p>
  <br/>
       <br/>
-       <br/>
-      <br/> <br/>
-      <br/> <br/>
+       <br/><br/>
       <br/>
 <p class="content">
   <span class="cutting-symbol">
@@ -878,8 +879,8 @@ const StudentList = () => {
 </p>
        <br/>
       <br/> <br/>
-      <br/> <br/>
-      <br/> <br/>
+     
+    
       <br/>
 
 

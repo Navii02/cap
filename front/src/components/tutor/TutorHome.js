@@ -15,7 +15,7 @@ function TutorHome() {
       const tutorEmail = localStorage.getItem('email');
       const academicYear = localStorage.getItem('academicYear'); // Assuming academic year is stored in localStorage
       const course = localStorage.getItem('tutorclass'); // Assuming course is stored in localStorage
-
+console.log(course);
       if (!tutorEmail || !academicYear || !course) {
         console.error('Required data not found in localStorage');
         return;
@@ -24,10 +24,12 @@ function TutorHome() {
       try {
         // Fetch tutor profile details
         const response = await axios.get(`${baseurl}/api/tutor-profile?email=${tutorEmail}`);
+       
         const { teachername, tutorclass, subjects } = response.data;
 
         // Fetch number of students based on academic year and course
         const studentsResponse = await axios.get(`${baseurl}/api/students-count?academicYear=${academicYear}&course=${course}`);
+        console.log("student",studentsResponse.data);
         const { totalStudents } = studentsResponse.data;
 
         setTutorName(teachername);

@@ -9,6 +9,7 @@ const ApprovedStudentSchema = new mongoose.Schema({
   allotmentCategory: String,
   feeCategory: String,
   otherCertificate: String,
+  category:String,
   photo: String, // Store file path for photo
   address: String,
   permanentAddress: { type: String, default: 'N/A' },
@@ -79,6 +80,8 @@ const ApprovedStudentSchema = new mongoose.Schema({
     communitycertificate: { type: Boolean, default: false },
     castecertificate: { type: Boolean, default: false },
     aadhaar: { type: Boolean, default: false },
+    marklist: { type: Boolean, default: false },
+    degreecertificates: { type:Boolean, default: false},
     other: { type: Boolean, default: false },
   },
   RollNo: { type: String,default: 'Nil'},
@@ -93,6 +96,7 @@ const ApprovedStudentSchema = new mongoose.Schema({
   email: { type: String, required: true },
   collegemail:{ type: String,default: 'Nil'}, // Array of strings (email addresses)
   tutormessage: [String], // Array of strings
+  isMinor: { type: Boolean, default: true},
   internalMarks: [
     {
       subject: String,

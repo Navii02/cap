@@ -1,8 +1,9 @@
 import React, { useState, useRef } from "react";
 import axios from "axios";
-import {baseurl} from '../../url';
+
 import "./DataEditing.css";
 import Modal from "react-modal";
+import {baseurl} from '../../url';
 
 
 Modal.setAppElement("#root");
@@ -20,6 +21,7 @@ const DataEntryForm = ({ fetchStudents, onDataEntered }) => {
     pincode: "",
     religion: "",
     community: "",
+    category: "",
     gender: "",
     dateOfBirth: "",
     bloodGroup: "",
@@ -80,6 +82,8 @@ const DataEntryForm = ({ fetchStudents, onDataEntered }) => {
       communitycertificate: false,
       castecertificate: false,
       aadhaar: false,
+      degreecertificates: false,
+      marklist: false,
       other: false,
     },
   };
@@ -100,33 +104,33 @@ const DataEntryForm = ({ fetchStudents, onDataEntered }) => {
       const mediaStream = await navigator.mediaDevices.getUserMedia({
         video: true,
       });
-
+  
       videoRef.current.srcObject = mediaStream;
       videoRef.current.play(); // Start playing the video
-
+  
       // Display both video and canvas elements
       videoRef.current.style.display = "block";
       canvasRef.current.style.display = "block";
-
+  
       // Introduce a delay before capturing the photo (adjust as needed)
       await new Promise((resolve) => setTimeout(resolve, 5000));
-
+  
       const canvas = canvasRef.current;
       const context = canvas.getContext("2d");
-
+  
       // Ensure video dimensions match canvas dimensions
       const { videoWidth, videoHeight } = videoRef.current;
       canvas.width = videoWidth;
       canvas.height = videoHeight;
-
+  
       // Draw the video frame onto the canvas
       context.translate(videoWidth, 0); // Flip horizontally
       context.scale(-1, 1); // Mirror image horizontally
       context.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
-
+  
       // Reset transformation to prevent further mirroring
       context.setTransform(1, 0, 0, 1, 0, 0);
-
+  
       // Show a confirmation dialog to capture the photo
       const captureConfirmed = window.confirm(
         "Do you want to capture this photo?"
@@ -135,9 +139,16 @@ const DataEntryForm = ({ fetchStudents, onDataEntered }) => {
         // Capture the photo from the canvas
         const photoData = canvas.toDataURL("image/jpeg");
         const blob = await fetch(photoData).then((res) => res.blob());
-        const file = new File([blob], "photo.jpg", { type: "image/jpeg" });
-        setFormData({ ...formData, photo: file });
-
+  
+        // Check file size before setting state
+        if (blob.size > 500 * 1024) { // 250 KB in bytes
+          setErrorMessage("The captured photo size exceeds 500 KB.");
+        } else {
+          const file = new File([blob], "photo.jpg", { type: "image/jpeg" });
+          setFormData({ ...formData, photo: file });
+          setErrorMessage(""); // Clear any previous error messages
+        }
+  
         // Hide the video and canvas elements after capturing the photo
         videoRef.current.srcObject.getTracks().forEach((track) => track.stop());
         videoRef.current.style.display = "none";
@@ -152,7 +163,7 @@ const DataEntryForm = ({ fetchStudents, onDataEntered }) => {
       console.error("Error accessing camera:", error);
     }
   };
-
+  
   const handleCopyAddress = () => {
     setCopyAddressOption(!copyAddressOption);
     if (!copyAddressOption) {
@@ -165,10 +176,17 @@ const DataEntryForm = ({ fetchStudents, onDataEntered }) => {
 
   const handleFileInputChange = (event) => {
     const { name, files } = event.target;
-    if (name === "photo") {
-      setFormData({ ...formData, [name]: files[0] });
+    if (files.length > 0) {
+      const file = files[0];
+      if (file.size > 250 * 1024) { // 250 KB in bytes
+        setErrorMessage("The file size exceeds 250 KB.");
+      } else {
+        setFormData({ ...formData, [name]: file });
+        setErrorMessage(""); // Clear any previous error messages
+      }
     }
   };
+  
 
   const handleChange = (event) => {
     const { name, value, files, checked, type } = event.target;
@@ -234,7 +252,7 @@ const DataEntryForm = ({ fetchStudents, onDataEntered }) => {
       setFormData({ ...formData, [name]: value });
     }
   };
- 
+  
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -254,11 +272,12 @@ const DataEntryForm = ({ fetchStudents, onDataEntered }) => {
     }
   
     try {
-     await axios.post(
+    await axios.post(
         `${baseurl}/api/studentadmission`,
         sendData,
         { headers: { "Content-Type": "multipart/form-data" } }
       );
+      
       setFormData({ ...initialFormData });
       setErrorMessage("Data submitted successfully"); // Use the same state variable for success message
       setModalIsOpen(true); // Open the modal on success
@@ -282,10 +301,10 @@ const DataEntryForm = ({ fetchStudents, onDataEntered }) => {
   return (
     <div>
     <div>
-  
+      
       <div className="data-entry-container">
         <div className="page-title">Admission Form</div>
-        <hr class="divider"></hr>
+        <hr className="divider"></hr>
         <form className="form" onSubmit={handleSubmit}>
           <div className="row">
             <div className="form-group">
@@ -298,6 +317,7 @@ const DataEntryForm = ({ fetchStudents, onDataEntered }) => {
               >
                 <option value="">Select Admission Type</option>
                 <option value="KEAM">KEAM</option>
+                <option value="LBS-MCA">LBS-MCA</option>
                 <option value="SPOT">SPOT</option>
                 <option value="LET">LET</option>
               </select>
@@ -326,6 +346,7 @@ const DataEntryForm = ({ fetchStudents, onDataEntered }) => {
                 <option value="">Select Fee Category</option>
                 <option value="Merit Lower Fee">Merit Lower Fee</option>
                 <option value="Merit Higher Fee">Merit Higher Fee</option>
+                <option value=" Fee wavier">FW</option>
               </select>
             </div>
             <div className="form-group">
@@ -454,6 +475,16 @@ const DataEntryForm = ({ fetchStudents, onDataEntered }) => {
                 required
               />
             </div>
+            <div className="form-group">
+              <label className="required">Category:</label>
+              <input
+                type="text"
+                name="category"
+                value={formData.category}
+                onChange={handleChange}
+                required
+              />
+            </div>
           </div>
           <div className="row">
             <div className="form-group">
@@ -538,7 +569,7 @@ const DataEntryForm = ({ fetchStudents, onDataEntered }) => {
             />
           </div>
           <div className="parent-details-row">
-            <div className="form-group">
+            <div className="form-group">    
               <label className="required">Entrance Roll No:</label>
               <input
                 type="text"
@@ -1020,6 +1051,31 @@ const DataEntryForm = ({ fetchStudents, onDataEntered }) => {
               <span className="checkmark"></span>
               <label htmlFor="castecertificate">Caste Certificate</label>
             </div>
+
+
+            <div className="checkbox-custom">
+              <input
+                type="checkbox"
+                id="degreecertificates"
+                name="degreecertificates"
+                checked={formData.certificates.degreecertificates}
+                onChange={handleChange}
+              />
+              <span className="checkmark"></span>
+              <label htmlFor="degreecertificates">Degree Certificate</label>
+            </div>
+            <div className="checkbox-custom">
+              <input
+                type="checkbox"
+                id="marklist"
+                name="marklist"
+                checked={formData.certificates.marklist}
+                onChange={handleChange}
+              />
+              <span className="checkmark"></span>
+              <label htmlFor="marklist">Mark List</label>
+            </div>
+            
             <div className="checkbox-custom">
               <input
                 type="checkbox"
@@ -1055,8 +1111,7 @@ const DataEntryForm = ({ fetchStudents, onDataEntered }) => {
       </div>
     
     </div>
-   
-<Modal
+    <Modal
   isOpen={modalIsOpen}
   onRequestClose={closeModal}
   contentLabel="Message Modal"

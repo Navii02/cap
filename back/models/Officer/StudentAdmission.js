@@ -10,6 +10,7 @@ const studentSchema = new mongoose.Schema({
   otherCertificate: String,
   photo: String, // Store file path for photo
   address: String,
+  category:String,
   permanentAddress: String,
   pincode: String,
   religion: String,
@@ -100,6 +101,8 @@ const studentSchema = new mongoose.Schema({
     communitycertificate: { type: Boolean, default: false },
     castecertificate: { type: Boolean, default: false },
     aadhaar: { type: Boolean, default: false },
+    marklist: { type: Boolean, default: false },
+    degreecertificates: { type:Boolean, default: false},
     other: { type: Boolean, default: false },
   },
   submissionDate: {

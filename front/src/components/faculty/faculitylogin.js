@@ -87,6 +87,7 @@ function FacultyLogin() {
       if (data) {
         localStorage.setItem('email', data.email);
         localStorage.setItem('role', data.role);
+        localStorage.setItem('branch',data.branch);
 
         if (!isMounted.current) return;
         navigate('/fchome');

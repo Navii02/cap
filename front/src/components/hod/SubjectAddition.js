@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
-import {baseurl} from '../../url';
+import { baseurl } from '../../url';
 import HodNavbar from './HodNavbar';
 import styles from './AddSubjectForm.module.css';
 
@@ -63,9 +63,8 @@ const ShowAddedSubjects = ({ selectedSemester, selectedCourse }) => {
       <table>
         <thead>
           <tr>
-            <th>Major Subject</th>
+            <th>Subject Name</th>
             <th>Subject Code</th>
-            <th>Minor Subject</th>
             <th>Action</th>
           </tr>
         </thead>
@@ -96,7 +95,6 @@ const ShowAddedSubjects = ({ selectedSemester, selectedCourse }) => {
                       sub.subjectCode
                     )}
                   </td>
-                  <td>{subIndex === 0 ? `${subject.minorSubject} (${subject.minorSubjectCode})` : ''}</td>
                   <td>
                     {subIndex === 0 && (
                       <>
@@ -124,8 +122,6 @@ const AddSubjectForm = () => {
   const [showAddForm, setShowAddForm] = useState(false);
   const [semester, setSemester] = useState('');
   const [subjects, setSubjects] = useState([{ subjectName: '', subjectCode: '' }]);
-  const [minorSubject, setMinorSubject] = useState('');
-  const [minorSubjectCode, setMinorSubjectCode] = useState('');
   const [branch, setBranch] = useState('');
   const [courses, setCourses] = useState([]);
 
@@ -134,8 +130,6 @@ const AddSubjectForm = () => {
     setSelectedSemester(value);
     setSemester(value);
     setSubjects([{ subjectName: '', subjectCode: '' }]);
-    setMinorSubject('');
-    setMinorSubjectCode('');
   };
 
   const handleChangeCourse = (e) => {
@@ -166,12 +160,14 @@ const AddSubjectForm = () => {
   };
 
   const handleAddColumn = () => {
-    if (semester < 7 && subjects.length < 6) {
+    if (semester < 3 && subjects.length < 8) {
       setSubjects([...subjects, { subjectName: '', subjectCode: '' }]);
-    } else if (semester === '8' && subjects.length < 8) {
+    } else if (semester >= 3 && semester <= 6 && subjects.length < 9) {
+      setSubjects([...subjects, { subjectName: '', subjectCode: '' }]);
+    } else if ((semester === 7 || semester === 8) && subjects.length < 6) {
       setSubjects([...subjects, { subjectName: '', subjectCode: '' }]);
     } else {
-      alert('You can only add up to 6 columns for semesters 1-7 and 8 columns for semester 8.');
+      alert('You have reached the maximum number of subjects for this semester.');
     }
   };
 
@@ -184,12 +180,10 @@ const AddSubjectForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(`/api/hod/subjects`, { semester, subjects, minorSubject, minorSubjectCode, branch, course: selectedCourse });
+      await axios.post(`${baseurl}/api/hod/subjects`, { semester, subjects, branch, course: selectedCourse });
       alert('Subjects added successfully!');
       setSemester('');
       setSubjects([{ subjectName: '', subjectCode: '' }]);
-      setMinorSubject('');
-      setMinorSubjectCode('');
       setShowAddForm(false); // Hide form after submission
     } catch (err) {
       console.error('Error adding subjects:', err);
@@ -198,108 +192,83 @@ const AddSubjectForm = () => {
   };
 
   return (
- 
-      <div>
-        <HodNavbar />
-        <div className={styles.container}>
-          {/* Content of the page */}
-          {branch && (
-            <>
-              <label className={styles.label} htmlFor="courseFilter">Select Course:</label>
-              <select className={styles.select} id="courseFilter" value={selectedCourse} onChange={handleChangeCourse}>
-                <option value="">Select Course</option>
-                {courses.map((course, index) => (
-                  <option key={index} value={course}>{course}</option>
-                ))}
-              </select>
-            </>
-          )}
-       
-          <label className={styles.label} htmlFor="semesterFilter">Select Semester:</label>
-          <select className={styles.select} id="semesterFilter" value={selectedSemester} onChange={handleChangeSemester}>
-            <option value="">Select Semester</option>
-            {[1, 2, 3, 4, 5, 6, 7, 8].map((sem) => (
-              <option key={sem} value={sem}>Semester {sem}</option>
-            ))}
-          </select>
-        </div>
-        {showAddForm && selectedSemester && selectedCourse && (
-          <div className={styles.container}>
-            <form onSubmit={handleSubmit} className={styles.form}>
-              <div>
-                {subjects.map((subject, index) => (
-                  <div key={index} className={styles.subjectRow}>
-                    <div>
-                      <label className={styles.label} htmlFor={`subjectName${index}`}>Subject Name:</label>
-                      <input
-                        className={styles.inputText}
-                        type="text"
-                        id={`subjectName${index}`}
-                        name="subjectName"
-                        value={subject.subjectName}
-                        onChange={(e) => handleChange(index, e)}
-                      />
-                    </div>
-                    <div>
-                      <label className={styles.label} htmlFor={`subjectCode${index}`}>Subject Code:</label>
-                      <input
-                        className={styles.inputText}
-                        type="text"
-                        id={`subjectCode${index}`}
-                        name="subjectCode"
-                        value={subject.subjectCode}
-                        onChange={(e) => handleChange(index, e)}
-                      />
-                    </div>
-                    {index > 0 && (
-                      <button type="button" className={styles.buttonRemove} onClick={() => handleRemoveColumn(index)}>
-                        Remove subject
-                      </button>
-                    )}
-                  </div>
-                ))}
-                {semester >= 3 && semester <= 6 && (
-                  <div>
-                    <div>
-                      <label className={styles.label} htmlFor="minorSubject">Minor Subject:</label>
-                      <input
-                        className={styles.inputText}
-                        type="text"
-                        id="minorSubject"
-                        value={minorSubject}
-                        onChange={(e) => setMinorSubject(e.target.value)}
-                      />
-                    </div>
-                    <div>
-                      <label className={styles.label} htmlFor="minorSubjectCode">Minor Subject Code:</label>
-                      <input
-                        className={styles.inputText}
-                        type="text"
-                        id="minorSubjectCode"
-                        value={minorSubjectCode}
-                        onChange={(e) => setMinorSubjectCode(e.target.value)}
-                      />
-                    </div>
-                  </div>
-                )}
-                {subjects.length < 8 && (
-                  <button type="button" className={styles.button} onClick={handleAddColumn}>
-                    Add Subject
-                  </button>
-                )}
-                <button type="submit" className={styles.button}>Add Subjects</button>
-              </div>
-            </form>
-          </div>
+    <div>
+      <HodNavbar />
+      <div className={styles.container}>
+        {/* Content of the page */}
+        {branch && (
+          <>
+            <label className={styles.label} htmlFor="courseFilter">Select Course:</label>
+            <select className={styles.select} id="courseFilter" value={selectedCourse} onChange={handleChangeCourse}>
+              <option value="">Select Course</option>
+              {courses.map((course, index) => (
+                <option key={index} value={course}>{course}</option>
+              ))}
+            </select>
+          </>
         )}
-        {!showAddForm && selectedSemester && selectedCourse && (
-          <div className={styles.container}>
-            <button className={styles.button} onClick={() => setShowAddForm(true)}>Add Subject</button>
-          </div>
-        )}
-        {selectedSemester && selectedCourse && <ShowAddedSubjects selectedSemester={selectedSemester} selectedCourse={selectedCourse} />}
+
+        <label className={styles.label} htmlFor="semesterFilter">Select Semester:</label>
+        <select className={styles.select} id="semesterFilter" value={selectedSemester} onChange={handleChangeSemester}>
+          <option value="">Select Semester</option>
+          {[1, 2, 3, 4, 5, 6, 7, 8].map((sem) => (
+            <option key={sem} value={sem}>Semester {sem}</option>
+          ))}
+        </select>
       </div>
-    );
-  };
-  
-  export default AddSubjectForm;
+      {showAddForm && selectedSemester && selectedCourse && (
+        <div className={styles.container}>
+          <form onSubmit={handleSubmit} className={styles.form}>
+            <div>
+              {subjects.map((subject, index) => (
+                <div key={index} className={styles.subjectRow}>
+                  <div>
+                    <label className={styles.label} htmlFor={`subjectName${index}`}>Subject Name:</label>
+                    <input
+                      className={styles.inputText}
+                      type="text"
+                      id={`subjectName${index}`}
+                      name="subjectName"
+                      value={subject.subjectName}
+                      onChange={(e) => handleChange(index, e)}
+                    />
+                  </div>
+                  <div>
+                    <label className={styles.label} htmlFor={`subjectCode${index}`}>Subject Code:</label>
+                    <input
+                      className={styles.inputText}
+                      type="text"
+                      id={`subjectCode${index}`}
+                      name="subjectCode"
+                      value={subject.subjectCode}
+                      onChange={(e) => handleChange(index, e)}
+                    />
+                  </div>
+                  <div>
+                    <button type="button" className={styles.buttonRemove} onClick={() => handleRemoveColumn(index)}>Remove</button>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div>
+              <button type="button" className={styles.buttonAdd} onClick={handleAddColumn}>Add Subject</button>
+            </div>
+            <div>
+              <button type="submit" className={styles.buttonSubmit}>Submit</button>
+            </div>
+          </form>
+        </div>
+      )}
+      <div className={styles.container}>
+        <button className={styles.buttonAddSubject} onClick={() => setShowAddForm(!showAddForm)}>
+          {showAddForm ? 'Hide Add Form' : 'Show Add Form'}
+        </button>
+        {selectedSemester && selectedCourse && (
+          <ShowAddedSubjects selectedSemester={selectedSemester} selectedCourse={selectedCourse} />
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default AddSubjectForm;

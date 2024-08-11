@@ -67,7 +67,7 @@ router.get('/approvedstudentDetails/:id', async (req, res) => {
     }
   }
 
-    const { name, admissionType, admissionId, admissionNumber, allotmentCategory,  address, permanentAddress, photo, pincode, religion, community, gender, dateOfBirth, bloodGroup, mobileNo, whatsappNo, email, entranceExam, entranceRollNo, entranceRank, aadharNo,  annualIncome, nativity,submissionDate} = student;
+    const { name, admissionType,category, admissionId, admissionNumber, allotmentCategory,  address, permanentAddress, photo, pincode, religion, community, gender, dateOfBirth, bloodGroup, mobileNo, whatsappNo, email, entranceExam, entranceRollNo, entranceRank, aadharNo,  annualIncome, nativity,submissionDate} = student;
     const { parentDetails } = student;
     const { bankDetails } = student;
     const { achievements } = student;
@@ -84,6 +84,7 @@ router.get('/approvedstudentDetails/:id', async (req, res) => {
         admissionNumber,
         allotmentCategory,
         feeCategory,
+        category,
         address,
         permanentAddress,
         pincode,
@@ -150,6 +151,9 @@ router.get('/approvedstudentDetails/:id', async (req, res) => {
         communitycertificate: certificates.communitycertificate,
         castecertificate: certificates.castecertificate,
         aadhaar: certificates.aadhaar,
+        degreecertificates: certificates.degreecertificates,
+        marklist: certificates.marklist,
+     
         other:certificates.other,
       },
       ...(feeDetails && {

@@ -92,6 +92,8 @@ function TutorLogin() {
         localStorage.setItem('role', data.role);
        
         localStorage.setItem('email', data.email);
+        localStorage.setItem('tutorclass', data.tutorclass);
+        localStorage.setItem('academicYear',data.academicYear)
       
         if (!isMounted.current) return;
         navigate('/thome');

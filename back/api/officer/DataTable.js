@@ -69,7 +69,7 @@ router.get('/studentDetails/:id', async (req, res) => {
       name, admissionType, admissionId, admissionNumber, allotmentCategory, address, permanentAddress,
       photo, pincode, religion, community, gender, dateOfBirth, bloodGroup, mobileNo, whatsappNo, email,
       entranceExam, entranceRollNo, entranceRank, aadharNo, annualIncome, nativity, submissionDate,
-      parentDetails, bankDetails, achievements, qualify, marks, certificates
+      parentDetails, bankDetails, achievements, qualify, marks, certificates,category
     } = student;
 
     const photoUrl = photo ? `${req.protocol}://${req.get('host')}/${photo}` : null;
@@ -101,6 +101,7 @@ router.get('/studentDetails/:id', async (req, res) => {
         annualIncome,
         nativity,
         photoUrl,
+        category,
         qualify: {
           exam: qualify.exam,
           board: qualify.board,
@@ -147,6 +148,8 @@ router.get('/studentDetails/:id', async (req, res) => {
           communitycertificate: certificates.communitycertificate,
           castecertificate: certificates.castecertificate,
           aadhaar: certificates.aadhaar,
+          degreecertificates: certificates.degreecertificates,
+          marklist: certificates.marklist,
           other: certificates.other,
         },
         submissionDate,
@@ -223,14 +226,14 @@ router.post('/approve/:id', async (req, res) => {
 
     let academicYear;
     const currentYear = new Date().getFullYear();
-    if (['KEAM'].includes(student.admissionType) || ['BBA', 'BCA', 'B.Tech CSE', 'B.Tech ECE'].includes(student.course)) {
+    if (['KEAM'].includes(student.admissionType) ) {
       const endYear = currentYear + 4;
       academicYear = `${currentYear}-${endYear}`;
     } else if (['LET'].includes(student.admissionType)) {
       const startYear = currentYear - 1;
       const endYear = startYear + 4;
       academicYear = `${startYear}-${endYear}`;
-    } else if (['MCA'].includes(student.course)) {
+    } else if (['LBS-MCA'].includes(student.admissionType)) {
       const endYear = currentYear + 2;
       academicYear = `${currentYear}-${endYear}`;
     }
@@ -335,9 +338,9 @@ router.post('/lastAdmissionNumbers', async (req, res) => {
       // Set default admission numbers based on course if last admission number is empty
       if (lastAdmissionNumber === '') {
         if (course === 'B.Tech CSE' || course === 'B.Tech ECE') {
-          lastAdmissionNumber = `3434/${lastDigitOfCurrentYear}`;
-        } else if (course === 'MBA') {
-          lastAdmissionNumber = `23/${lastDigitOfCurrentYear}`;
+          lastAdmissionNumber = `3433/${lastDigitOfCurrentYear}`;
+        } else if (course === 'MCA') {
+          lastAdmissionNumber = `22/${lastDigitOfCurrentYear}`;
         } else {
           lastAdmissionNumber = `0000/${lastDigitOfCurrentYear}`; // Default for other courses if needed
         }
