@@ -540,7 +540,7 @@ const StudentList = () => {
    <table class="print-table">
   
     <tr>
-      <td colspan="2" style="font-weight:bold;">Admission No: ${studentDetails.admissionId}</td>
+      <td colspan="2" style="font-weight:bold;"></td>
       <td colspan="2" style="text-align: left;">Submission Date: ${formatDate(studentDetails.submissionDate)}</td>
     </tr>
     <tr>
@@ -1069,7 +1069,7 @@ const StudentList = () => {
                   <thead>
                     <tr>
                       <th>Name</th>
-                      <th>Admission ID</th>
+                    
                       <th>Course</th>
                       <th>Submission Date</th>
                       <th>Next Admission Number</th>
@@ -1080,7 +1080,7 @@ const StudentList = () => {
                     {students.map((student) => (
                       <tr key={student._id}>
                         <td>{student.name}</td>
-                        <td>{student.admissionId}</td>
+                     
                         <td>{student.course}</td>
                         <td>
                           {student.submissionDate

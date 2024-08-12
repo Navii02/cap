@@ -9,9 +9,9 @@ const ApprovedStudentSchema = new mongoose.Schema({
   allotmentCategory: String,
   feeCategory: String,
   otherCertificate: String,
-  category:String,
+  category:{ type: String, default: 'N/A' },
   photo: String, // Store file path for photo
-  address: String,
+  address:{ type: String, default: 'N/A' },
   permanentAddress: { type: String, default: 'N/A' },
   pincode: String,
   religion: { type: String, default: 'N/A' },

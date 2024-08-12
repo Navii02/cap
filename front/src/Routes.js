@@ -1,5 +1,6 @@
 import { Route, Routes } from 'react-router-dom';
-import Layout from './components/Layout';
+
+
 import HomePage from './components/home';
 import Login from './components/student/studentlogin';
 import Signup from './components/student/studentsignup';
@@ -82,7 +83,7 @@ import PrivateRoute from './ProtectedRoutes'; // Import the PrivateRoute compone
 function RoutesComp() {
   return (
     <>
-     <Layout>
+  
       <Routes>
      
         <Route path='/' element={<HomePage />} />
@@ -492,7 +493,7 @@ function RoutesComp() {
         <Route path='/pforgot' element={<PForgotPassword />} />
       
       </Routes>
-      </Layout>
+
     </>
   );
 }
